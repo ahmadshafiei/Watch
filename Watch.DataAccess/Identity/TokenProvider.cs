@@ -35,7 +35,6 @@ namespace Watch.DataAccess.Identity
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-
             User user = await userManager.FindAsync(context.UserName, context.Password);
 
             if (user == null)
@@ -65,6 +64,6 @@ namespace Watch.DataAccess.Identity
                 { "userName", user.UserName },
             };
             return new AuthenticationProperties(data);
-        }
+        } 
     }
 }

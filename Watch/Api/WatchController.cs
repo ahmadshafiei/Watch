@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -27,15 +29,30 @@ namespace Watch.Api
             this.userManager = userManager;
         }
 
+        #region [IMAGE]
+        [HttpPost]
+        public  void SaveImage(string image)
+        {
+            MemoryStream ms = new MemoryStream(Convert.FromBase64String(image));
+            var img = System.Drawing.Image.FromStream(ms);
+            System.Drawing.Image s;
+            img.Save("~/WatchImages/image" , img.RawFormat);
+            
+        }
+        #endregion
+
+
         #region [WATCH-CRUD]
 
         [Authorize(Roles = "1,3")]
         [HttpPost]
-        public IResponse InsertWatch(Models.Watch watch)
+        public async Task<IResponse> InsertWatch(Models.Watch watch)
         {
             try
             {
-                watchBusiness.InsertWatch(watch);
+                User user = await userManager.FindByNameAsync(User.Identity.Name);
+                watch.User_Id = user.Id;
+                watchBusiness.InsertWatch(watch , watch.MainImage , watch.SubImages);
                 return new Response<Models.Watch>();
             }
             catch (Exception e)

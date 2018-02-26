@@ -11,6 +11,11 @@ namespace Watch.Models
 {
     public class Watch
     {
+        public Watch()
+        {
+            Images = new List<Image>();
+            DateCreated = DateTime.Now;
+        }
         [Key]
         public int Id { get; set; }
         public int Quantity { get; set; }
@@ -41,5 +46,13 @@ namespace Watch.Models
         public List<Image> Images { get; set; }
         public List<WatchBookmark> WatchBookmarks { get; set; }
         public List<SuggestPrice> SuggestedPrices { get; set; }
+        
+        #region [Insert-Watch]
+        //THESE TWO PROPERTY USED IN InsertWatch
+        [NotMapped]
+        public byte[] MainImage { get; set; }
+        [NotMapped]
+        public List<byte[]> SubImages { get; set; }
+        #endregion
     }
 }

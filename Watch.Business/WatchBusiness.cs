@@ -7,6 +7,7 @@ using Watch.Models;
 using System;
 using Watch.Business.Exceptions;
 using Watch.Models.Enum;
+using System.IO;
 
 namespace Watch.Business
 {
@@ -35,8 +36,18 @@ namespace Watch.Business
 
         #region [WATHC-CRUD]
 
-        public void InsertWatch(Models.Watch watch)
+        public void InsertWatch(Models.Watch watch, byte[] mainImage, List<byte[]> images)
         {
+            watch.MainImagePath = Utility.Image.Save(mainImage);
+
+            foreach (byte[] img in images)
+            {
+                watch.Images.Add(new Image
+                {
+                    Path = Utility.Image.Save(mainImage)
+                });
+            }
+
             watchRepository.Insert(watch);
             unitOfWork.Commit();
         }
@@ -197,7 +208,7 @@ namespace Watch.Business
         public Models.Watch GetWatchDetail(int watchId)
         {
             Models.Watch result = watchRepository.Get().Where(w => w.Id == watchId).Include(w => w.WatchBookmarks)
-                .Include(w => w.Brand) 
+                .Include(w => w.Brand)
                 .Include(w => w.Images)
                 .Include(w => w.OwnerUser)
                 .FirstOrDefault();
@@ -242,7 +253,8 @@ namespace Watch.Business
 
             List<Models.Watch> listedResult = result.ToList();
 
-            listedResult.ForEach(w => {
+            listedResult.ForEach(w =>
+            {
                 w.Brand.Watches = null;
             });
 

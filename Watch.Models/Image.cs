@@ -11,7 +11,6 @@ namespace Watch.Models
     {
         public int Id { get; set; }
         public string Path { get; set; }
-        public string Type { get; set; }
         public int WatchId { get; set; }
         [ForeignKey("WatchId")]
         public Watch Watch { get; set; }
