@@ -210,7 +210,7 @@
     <Compile Include="Utility\MD5Encrypter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Blur-Admin\404.html" />
+    <Content Include="Statics\404.html" />
     <Content Include="Blur-Admin\app\404.css" />
     <Content Include="Blur-Admin\app\app.js" />
     <Content Include="Blur-Admin\app\auth.css" />
@@ -621,10 +621,10 @@
     <Content Include="Blur-Admin\assets\pictures\pic-profile.png" />
     <Content Include="Blur-Admin\assets\pictures\pic-vova.png" />
     <Content Include="Blur-Admin\assets\pictures\tinder-logo.jpg" />
-    <Content Include="Blur-Admin\auth.html" />
+    <Content Include="Statics\auth.html" />
     <Content Include="Blur-Admin\fonts\fontawesome-webfont.svg" />
     <Content Include="Blur-Admin\fonts\ionicons.svg" />
-    <Content Include="Blur-Admin\index.html" />
+    <Content Include="Statics\index.html" />
     <Content Include="Blur-Admin\lib\amcharts.js" />
     <Content Include="Blur-Admin\lib\ammap.js" />
     <Content Include="Blur-Admin\lib\amstock.js" />
@@ -697,7 +697,7 @@
     <Content Include="Blur-Admin\lib\worldLow.js" />
     <Content Include="Blur-Admin\lib\xeditable.css" />
     <Content Include="Blur-Admin\lib\xeditable.js" />
-    <Content Include="Blur-Admin\reg.html" />
+    <Content Include="Statics\reg.html" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="ApplicationInsights.config">
@@ -805,6 +805,8 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Angular\Controllers\" />
+    <Folder Include="Angular\Services\" />
     <Folder Include="Blur-Admin\assets\img\theme\amChart\" />
   </ItemGroup>
   <PropertyGroup>
