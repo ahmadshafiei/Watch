@@ -10,10 +10,13 @@ namespace Watch.Models
     public class Request
     {
         public int Id { get; set; }
+        public bool IsPaid { get; set;}
+        //How many watches are requested
+        public int Count { get; set; }
+        public bool IsBuyerProtected { get; set; }
         public int? Address_Id { get; set; }
         [ForeignKey("Address_Id")]
         public Address Address { get; set; }
-        public bool IsPaid { get; set; }
         public int User_Id { get; set; }
         [ForeignKey("User_Id")]
         public User User { get; set; }

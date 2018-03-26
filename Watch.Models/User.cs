@@ -10,6 +10,8 @@ namespace Watch.Models
         public User()
         {
             SecurityStamp = Guid.NewGuid().ToString();
+            Addresses = new List<Address>();
+            UserRoles = new List<UserRole>();
         }
         public int Id { get; set; }
         public string UserName { get; set; }

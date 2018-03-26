@@ -2,6 +2,7 @@
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.Infrastructure;
 using Microsoft.Owin.Security.OAuth;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,8 @@ namespace Watch.DataAccess.Identity
         public TokenProvider(string publicClientId)
         {
             _publicClientId = publicClientId ?? throw new ArgumentNullException("publicClientId");
-            userManager = new UserManager(new UserStore(new Repositories.UserRepository(new WatchContext()), new UnitOfWork.UnitOfWork(new WatchContext())));
+            var context = new WatchContext();
+            userManager = new UserManager(new UserStore(new Repositories.UserRepository(context),new Repositories.RoleRepository(context), new Repositories.UserRoleRepository(context),new UnitOfWork.UnitOfWork(context)));
         }
         public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
@@ -48,7 +50,7 @@ namespace Watch.DataAccess.Identity
             ClaimsIdentity cookiesIdentity = await userManager.CreateIdentityAsync(user,
                 CookieAuthenticationDefaults.AuthenticationType);
 
-            cookiesIdentity.AddClaim(new Claim(ClaimTypes.Role, String.Join(",", user.UserRoles.Select(ur => ur.RoleId).ToArray())));
+            cookiesIdentity.AddClaim(new Claim(ClaimTypes.Role, String.Join(",", user.UserRoles.Select(ur => ur.Role.Name))));
 
             AuthenticationProperties properties = CreateProperties(user);
             AuthenticationTicket ticket = new AuthenticationTicket(oAuthIdentity, properties);

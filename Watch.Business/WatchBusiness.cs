@@ -77,24 +77,7 @@ namespace Watch.Business
 
         #endregion
 
-
-        #region [BOOKMARK]
-
-        public void BookmarkWatch(int userId, int watchId)
-        {
-            bookmarkRepository.Insert(new WatchBookmark() { User_Id = userId, Watch_Id = watchId });
-            unitOfWork.Commit();
-        }
-
-        public List<int> GetAllBookmarks(int userId)
-        {
-            return bookmarkRepository.Get().Where(b => b.User_Id == userId).Select(b => b.Watch_Id).ToList();
-        }
-
-        #endregion
-
-        #region
-
+        #region [Watch , Brand]
         public List<Models.Watch> GetBestProducts(int? pageNumber, int? pageSize, out int count)
         {
             IQueryable<Models.Watch> result = watchRepository.Get().OrderByDescending(w => w.WatchBookmarks.Count);
@@ -261,7 +244,6 @@ namespace Watch.Business
             return listedResult;
         }
 
-
         public void SuggestPrice(int watchId, int userId, decimal suggestedPrice)
         {
             Models.Watch watch = watchRepository.Get().Where(w => w.Id == watchId).Include(w => w.SuggestedPrices).FirstOrDefault();
@@ -285,19 +267,6 @@ namespace Watch.Business
             watchRepository.Update(watch);
 
             unitOfWork.Commit();
-        }
-
-        public List<Address> GetAddressList(int userId)
-        {
-            User user = userRepository.Get().Where(u => u.Id == userId).Include(u => u.Addresses).FirstOrDefault();
-
-            if (user == null)
-                throw new NotFoundException("کاربر");
-
-            if (user.Addresses == null)
-                throw new NotFoundException("آدرس کاربر");
-
-            return user.Addresses;
         }
 
         public List<Models.Watch> SearchWatch(string searchExp, int? pageNumber, int? pageSize, int? brandId, Movement? movement, decimal? minPrice, decimal? maxPrice, Condition? condition, out int count)
@@ -350,7 +319,6 @@ namespace Watch.Business
             return result.ToList();
         }
 
-
         public List<Models.Watch> GetStoreWatches(int storeId, SortBy? sortBy, int? pageNumber, int? pageSize, out int count)
         {
             Store store = storeRepository.Get().Where(s => s.Id == storeId).Include(s => s.StoreBookmarks).FirstOrDefault();
@@ -373,7 +341,42 @@ namespace Watch.Business
             return result.ToList();
         }
 
-        #endregion
+        #endregion []
 
+        #region [Address]
+        public void AddAddress(int userId, string city, string fullAddress, string phoneNumber, string name, string family, string nationalCode, Models.Gender gender)
+        {
+            User user = userRepository.GetById(userId);
+
+            if (user == null)
+                throw new NotFoundException("کاربر");
+
+            user.Addresses.Add(
+                new Address
+                {
+                    City = city,
+                    FullAddress = fullAddress,
+                    PhoneNumber = phoneNumber,
+                    Name = name,
+                    Family = family,
+                    NationalCode = nationalCode,
+                    Gender = gender,
+                });
+
+        }
+
+        public List<Address> GetAddressList(int userId)
+        {
+            User user = userRepository.Get().Where(u => u.Id == userId).Include(u => u.Addresses).FirstOrDefault();
+
+            if (user == null)
+                throw new NotFoundException("کاربر");
+
+            if (user.Addresses == null)
+                throw new NotFoundException("آدرس کاربر");
+
+            return user.Addresses;
+        }
+        #endregion
     }
 }

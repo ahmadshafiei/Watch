@@ -26,7 +26,7 @@ namespace Watch.Api
             }
         }
 
-        public AuthenticationController(UserRepository userRepository , UserStore userStore)
+        public AuthenticationController(UserRepository userRepository, UserStore userStore)
         {
             this.userStore = userStore;
             this.userRepository = userRepository;
@@ -38,10 +38,11 @@ namespace Watch.Api
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-           var identity = await  userManager.CreateAsync(user, user.Password);
+            var identity = await userManager.CreateAsync(user, user.Password);
+            identity = await userManager.AddToRoleAsync(user.Id, "User");
 
             if (!identity.Succeeded)
-                return BadRequest(String.Join(" - ",identity.Errors));
+                return BadRequest(String.Join(" - ", identity.Errors));
 
             return Ok(identity);
         }
@@ -50,12 +51,6 @@ namespace Watch.Api
         public Task ResetPassword(string email)
         {
             return Task.FromResult(0);
-        }
-
-        [Authorize]
-        public List<User> test()
-        {
-            return userRepository.GetAll();
         }
     }
 }

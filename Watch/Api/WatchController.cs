@@ -29,22 +29,9 @@ namespace Watch.Api
             this.userManager = userManager;
         }
 
-        #region [IMAGE]
-        [HttpPost]
-        public  void SaveImage(string image)
-        {
-            MemoryStream ms = new MemoryStream(Convert.FromBase64String(image));
-            var img = System.Drawing.Image.FromStream(ms);
-            System.Drawing.Image s;
-            img.Save("~/WatchImages/image" , img.RawFormat);
-            
-        }
-        #endregion
-
-
         #region [WATCH-CRUD]
 
-        [Authorize(Roles = "1,3")]
+        [Authorize(Roles = "Admin,Seller")]
         [HttpPost]
         public async Task<IResponse> InsertWatch(Models.Watch watch)
         {
@@ -52,7 +39,7 @@ namespace Watch.Api
             {
                 User user = await userManager.FindByNameAsync(User.Identity.Name);
                 watch.User_Id = user.Id;
-                watchBusiness.InsertWatch(watch , watch.MainImage , watch.SubImages);
+                watchBusiness.InsertWatch(watch, watch.MainImage, watch.SubImages);
                 return new Response<Models.Watch>();
             }
             catch (Exception e)
@@ -61,7 +48,7 @@ namespace Watch.Api
             }
         }
 
-        [Authorize(Roles = "1,3")]
+        [Authorize(Roles = "Admin,Seller")]
         [HttpGet]
         public IResponse DeleteWatch(int id)
         {
@@ -76,7 +63,7 @@ namespace Watch.Api
             }
         }
 
-        [Authorize(Roles = "1,3")]
+        [Authorize(Roles = "Admin,Seller")]
         [HttpPost]
         public IResponse UpdateWatch(Models.Watch watch)
         {
@@ -108,44 +95,7 @@ namespace Watch.Api
         }
         #endregion
 
-        #region [BOOKMARK]
-
-        [Authorize(Roles = "2")]
-        public IResponse BookmarkWatch(int watchId)
-        {
-            try
-            {
-                int userId = userRepository.Get().Where(u => u.UserName == User.Identity.Name).Single().Id;
-                watchBusiness.BookmarkWatch(userId, watchId);
-                return new Response<WatchBookmark>();
-            }
-            catch (Exception e)
-            {
-                return new Response<WatchBookmark>() { Success = false, Message = e.Message };
-            }
-
-        }
-
-        [Authorize(Roles = "2")]
-        public IResponse GetAllWatchBookmarks()
-        {
-            try
-            {
-                int userId = userRepository.Get().Where(u => u.UserName == User.Identity.Name).Single().Id;
-                PagedResult<int> result = new PagedResult<int>();
-                result.Data = watchBusiness.GetAllBookmarks(userId);
-                return new Response<int>() { Result = result };
-            }
-            catch (Exception e)
-            {
-                return new Response<int>() { Success = false, Message = e.Message };
-            }
-
-        }
-
-        #endregion
-
-        #region []
+        #region [Watch , Brand]
 
         [HttpGet]
         public IResponse GetBestProducts(int? pageNumber = null, int? pageSize = null)
@@ -315,7 +265,7 @@ namespace Watch.Api
             }
         }
 
-        [Authorize(Roles = "1,2,3")]
+        [Authorize(Roles = "Admin,Seller,User")]
         [HttpGet]
         public async Task<IResponse> SuggestPrice(int watchId, decimal suggestedPrice)
         {
@@ -331,33 +281,6 @@ namespace Watch.Api
                 {
                     Success = false,
                     Message = e.Message,
-                };
-            }
-        }
-
-        [Authorize(Roles = "1,2,3")]
-        [HttpGet]
-        public async Task<IResponse> GetAddressList()
-        {
-            try
-            {
-                User user = await userManager.FindByNameAsync(User.Identity.Name);
-
-                PagedResult<Address> result = new PagedResult<Address>();
-
-                result.Data = watchBusiness.GetAddressList(user.Id);
-
-                return new Response<Address>
-                {
-                    Result = result
-                };
-            }
-            catch (Exception e)
-            {
-                return new Response<Address>
-                {
-                    Success = false,
-                    Message = e.Message
                 };
             }
         }
@@ -388,30 +311,56 @@ namespace Watch.Api
             };
         }
 
-        //[HttpGet]
-        //public IResponse GetStoreWatches(int storeId, SortBy? sortBy = null, int? pageNumber = null, int? pageSize = null)
-        //{
-        //    try
-        //    {
-        //        PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
+        #endregion
 
-        //        result.Data = watchBusiness.GetStoreWatches(storeId, sortBy, pageNumber, pageNumber, out result.Count);
+        #region [Address]
+        [HttpPost]
+        [Authorize(Roles = "Admin,Seller,User")]
+        public async Task<IResponse> AddAddress(Address address)
+        {
+            try
+            {
+                User user = await userManager.FindByNameAsync(User.Identity.Name);
+                watchBusiness.AddAddress(user.Id, address.City, address.FullAddress, address.PhoneNumber, address.Name, address.Family, address.NationalCode, address.Gender);
+                return new Response<Address>();
+            }
+            catch (Exception e)
+            {
+                return new Response<Address>
+                {
+                    Success = false,
+                    Message = e.Message
+                };
+            }
+        }
 
-        //        return new Response<Models.Watch>
-        //        {
-        //            Result = result
-        //        };
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return new Response<Models.Watch>
-        //        {
-        //            Success = false,
-        //            Message = e.Message
-        //        };
-        //    }
-        //}
+        [Authorize(Roles = "Admin,Seller,User")]
+        [HttpGet]
+        public async Task<IResponse> GetAddressList()
+        {
+            try
+            {
+                User user = await userManager.FindByNameAsync(User.Identity.Name);
 
+                PagedResult<Address> result = new PagedResult<Address>
+                {
+                    Data = watchBusiness.GetAddressList(user.Id)
+                };
+
+                return new Response<Address>
+                {
+                    Result = result
+                };
+            }
+            catch (Exception e)
+            {
+                return new Response<Address>
+                {
+                    Success = false,
+                    Message = e.Message
+                };
+            }
+        }
         #endregion
     }
 }

@@ -17,7 +17,6 @@ namespace Watch.Models
         public int User_Id { get; set; }
         [ForeignKey("User_Id")]
         public User User { get; set; }
-        public string LogoType { get; set; }
         public string LogoPath { get; set; }
         public List<StoreBookmark> StoreBookmarks { get; set; }
     }

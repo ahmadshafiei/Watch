@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.Infrastructure;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
 using System;
@@ -18,7 +19,7 @@ namespace Watch
             app.UseOAuthBearerTokens(new OAuthAuthorizationServerOptions()
             {
                 TokenEndpointPath = new PathString("/Token"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
+                AccessTokenExpireTimeSpan = TimeSpan.FromSeconds(30),
                 Provider = new TokenProvider("self"),
                 AllowInsecureHttp = true //Set to false on deployment
             });

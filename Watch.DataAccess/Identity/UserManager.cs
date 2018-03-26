@@ -32,16 +32,14 @@ namespace Watch.DataAccess.Identity
             });
         }
 
-        public override Task<ClaimsIdentity> CreateIdentityAsync(User user, string authenticationType)
+        public async override Task<ClaimsIdentity> CreateIdentityAsync(User user, string authenticationType)
         {
-            return Task.Run(() =>
-            {
-                var identity = base.CreateIdentityAsync(user, authenticationType).Result;
-                identity.AddClaim(new Claim("username", user.UserName));
-                foreach (var role in user.UserRoles)
-                    identity.AddClaim(new Claim(ClaimTypes.Role, role.RoleId.ToString()));
-                return identity;
-            });
+            var identity = await base.CreateIdentityAsync(user, authenticationType);
+            identity.AddClaim(new Claim("username", user.UserName));
+            foreach (var role in user.UserRoles)
+                identity.AddClaim(new Claim(ClaimTypes.Role, role.RoleId.ToString()));
+            return identity;
+            
         }
 
         public override Task<IdentityResult> CreateAsync(User user, string password)

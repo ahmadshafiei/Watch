@@ -29,7 +29,7 @@ namespace Watch.Models
         public Condition Condition { get; set; }
         public decimal Price { get; set; }
         public string MainImagePath { get; set; }
-        public string MainImageType { get; set; }
+        //public string MainImageType { get; set; }
         public bool IsAvailable { get; set; }
         public bool IsHeader { get; set; }
         //Determines if user can suggest price on this particular watch

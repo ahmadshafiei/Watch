@@ -40,6 +40,7 @@ namespace Watch
             var config = GlobalConfiguration.Configuration;
 
             builder.RegisterType<WatchBusiness>().InstancePerRequest();
+            builder.RegisterType<RequestBusiness>().InstancePerRequest();
 
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().AsSelf().InstancePerRequest();
             builder.RegisterType<WatchContext>().As<DbContext>().AsSelf().InstancePerRequest();
@@ -56,6 +57,7 @@ namespace Watch
             builder.RegisterType<BrandRepository>().InstancePerRequest();
             builder.RegisterType<StoreRepository>().InstancePerRequest();
             builder.RegisterType<SuggestPriceRepository>().InstancePerRequest();
+            builder.RegisterType<UserRoleRepository>().InstancePerRequest();
 
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
 
