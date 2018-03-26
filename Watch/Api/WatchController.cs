@@ -98,10 +98,10 @@ namespace Watch.Api
         #region [Watch , Brand]
 
         [HttpGet]
-        public IResponse GetBestProducts(int? pageNumber = null, int? pageSize = null)
+        public IResponse GetBestProducts(int? pageNumber = null, int? pageSize = null, int[] brands = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
-            result.Data = watchBusiness.GetBestProducts(pageNumber, pageSize, out result.Count);
+            result.Data = watchBusiness.GetBestProducts(pageNumber, pageSize, brands, out result.Count);
             return new Response<Models.Watch>
             {
                 Result = result
@@ -117,6 +117,29 @@ namespace Watch.Api
             {
                 Result = result
             };
+        }
+
+        [HttpGet]
+        public IResponse GetAllBrands()
+        {
+            PagedResult<Brand> result = new PagedResult<Brand>();
+            result.Data = watchBusiness.GetAllBrands(out result.Count);
+            return new Response<Brand>
+            {
+                Result = result
+            };
+        }
+
+        [HttpGet]
+        public IResponse GetBrandBotique(int? pageNumber, int? pageSize, int brandId)
+        {
+            PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
+            result.Data = watchBusiness.GetBrandButique(pageNumber, pageSize, brandId, out result.Count);
+            return new Response<Models.Watch>
+            {
+                Result = result
+            };
+
         }
 
         [HttpGet]
@@ -142,10 +165,10 @@ namespace Watch.Api
         }
 
         [HttpGet]
-        public IResponse GetLatestWatches(int? pageNumber = null, int? pageSize = null)
+        public IResponse GetLatestWatches(int? pageNumber = null, int? pageSize = null, int[] brands = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
-            result.Data = watchBusiness.GetLatestProducts(pageNumber, pageSize, out result.Count);
+            result.Data = watchBusiness.GetLatestProducts(pageNumber, pageSize, brands, out result.Count);
             return new Response<Models.Watch>
             {
                 Result = result
@@ -153,10 +176,10 @@ namespace Watch.Api
         }
 
         [HttpGet]
-        public IResponse GetTopSellWatches(int? pageNumber = null, int? pageSize = null)
+        public IResponse GetTopSellWatches(int? pageNumber = null, int? pageSize = null , int[] brands = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
-            result.Data = watchBusiness.GetTopSellWatches(pageNumber, pageSize, out result.Count);
+            result.Data = watchBusiness.GetTopSellWatches(pageNumber, pageSize, brands, out result.Count);
             return new Response<Models.Watch>
             {
                 Result = result
@@ -194,7 +217,11 @@ namespace Watch.Api
         {
             try
             {
-                Models.Watch watch = watchBusiness.GetWatchDetail(watchId);
+                string username = String.Empty;
+                if (User.Identity.IsAuthenticated)
+                    username = User.Identity.Name;
+
+                Models.Watch watch = watchBusiness.GetWatchDetail(watchId , username);
                 return new Response<Models.Watch>
                 {
                     Result = new PagedResult<Models.Watch>
@@ -311,6 +338,34 @@ namespace Watch.Api
             };
         }
 
+        [HttpGet]
+        public IResponse GetSellerByUserId(int userId)
+        {
+            try
+            {
+                Seller seller = watchBusiness.GetSellerByUserId(userId);
+                return new Response<Seller>
+                {
+                    Result = new PagedResult<Seller>
+                    {
+                        Count = 1,
+                        Data = new List<Seller>
+                        {
+                            seller,
+                        }
+                    }
+                };
+            }
+            catch (Exception e)
+            {
+                return new Response<Seller>
+                {
+                    Success = false,
+                    Message = e.Message,
+                };
+            }
+        }
+
         #endregion
 
         #region [Address]
@@ -321,7 +376,7 @@ namespace Watch.Api
             try
             {
                 User user = await userManager.FindByNameAsync(User.Identity.Name);
-                watchBusiness.AddAddress(user.Id, address.City, address.FullAddress, address.PhoneNumber, address.Name, address.Family, address.NationalCode, address.Gender);
+                watchBusiness.AddAddress(user.Id, address.City, address.FullAddress, address.PhoneNumber);
                 return new Response<Address>();
             }
             catch (Exception e)

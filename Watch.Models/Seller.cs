@@ -15,7 +15,8 @@ namespace Watch.Models
         [ForeignKey("UserId")]
         public User User { get; set; }
         public string Tell { get; set; }
-        public string Fax { get; set; }
         public string PhoneNumber { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
     }
 }

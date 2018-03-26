@@ -14,6 +14,7 @@ namespace Watch.Models
         [Key]
         public int Id { get; set; }
         public decimal Suggested_Price { get; set; }
+        public string Description { get; set; }
         public int User_Id { get; set; }
         [ForeignKey("User_Id")]
         public User User { get; set; }

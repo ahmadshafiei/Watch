@@ -43,8 +43,10 @@ namespace Watch.Api
             try
             {
                 int userId = userRepository.Get().Where(u => u.UserName == User.Identity.Name).Single().Id;
-                PagedResult<int> result = new PagedResult<int>();
-                result.Data = bookMarkBusiness.GetAllBookmarks(userId);
+                PagedResult<int> result = new PagedResult<int>
+                {
+                    Data = bookMarkBusiness.GetAllBookmarks(userId)
+                };
                 return new Response<int>() { Result = result };
             }
             catch (Exception e)

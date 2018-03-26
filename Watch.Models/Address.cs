@@ -17,14 +17,6 @@ namespace Watch.Models
         public string City { get; set; }
         public string FullAddress { get; set; }
         public string PhoneNumber { get; set; }
-
-        #region [Personal Information Part Of Adding Addresses]
-        public string Name { get; set; }
-        public string Family { get; set; }
-        public string NationalCode { get; set; }
-        public Gender Gender { get; set; }
-        #endregion
-
         //Determine address type for user or store : NotNullable
         public AddressType Type { get; set; }
         public int User_Id { get; set; }
