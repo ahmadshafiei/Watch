@@ -67,21 +67,20 @@ namespace Watch.Api
         }
 
         [HttpGet]
-        [Authorize(Roles="User,Seller,Admin")]
-        public async Task<IResponse> GetSuggestedPrices(int? pageNumber = null , int? pageSize = null)
+        [Authorize(Roles = "User,Seller,Admin")]
+        public async Task<IResponse> GetSuggestedPrices(int? pageNumber = null, int? pageSize = null)
         {
             User user = await userManager.FindByEmailAsync(User.Identity.Name);
 
             try
             {
-                PagedResult<SuggestPrice> result = new PagedResult<SuggestPrice>
-                {
-                    Data = profileBusiness.GetSuggestedPrices(pageNumber, pageSize, user.Id , out result.Count);
-                };
+                PagedResult<SuggestPrice> result = new PagedResult<SuggestPrice>();
+
+                result.Data = profileBusiness.GetSuggestedPrices(pageNumber, pageSize, user.Id, out result.Count);
 
                 return new Response<SuggestPrice>
                 {
-                    
+                    Result = result
                 };
             }
             catch (Exception e)
@@ -92,9 +91,6 @@ namespace Watch.Api
                     Message = e.Message
                 };
             }
-
-
-            return null;
         }
     }
 }

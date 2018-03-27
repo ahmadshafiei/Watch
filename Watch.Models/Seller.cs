@@ -10,6 +10,11 @@ namespace Watch.Models
 {
     public class Seller
     {
+        public Seller()
+        {
+            StoreBookmarks = new List<StoreBookmark>();
+        }
+
         public int Id { get; set; }
         public string StoreName { get; set; }
         public string Tell { get; set; }
@@ -21,5 +26,9 @@ namespace Watch.Models
         [ForeignKey("User_Id")]
         public User User { get; set; }
         public List<StoreBookmark> StoreBookmarks { get; set; }
+        #region [Get Watch Stores]
+        [NotMapped]
+        public bool IsBookmarked { get; set; }
+        #endregion
     }
 }

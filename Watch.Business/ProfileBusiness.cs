@@ -18,7 +18,7 @@ namespace Watch.Business
         private readonly SuggestPriceRepository suggestPriceRepository;
         private readonly UserManager userManager;
 
-        public ProfileBusiness(UserManager userManager , UserRepository userRepository , SellerRepository sellerRepository, SuggestPriceRepository suggestPriceRepository)
+        public ProfileBusiness(UserManager userManager, UserRepository userRepository, SellerRepository sellerRepository, SuggestPriceRepository suggestPriceRepository)
         {
             this.userRepository = userRepository;
             this.userManager = userManager;
@@ -64,10 +64,20 @@ namespace Watch.Business
             return seller;
         }
 
-        public List<SuggestPrice> GetSuggestedPrices(int? pageNumber, int? pageSize, int userId , out int count)
+        public List<SuggestPrice> GetSuggestedPrices(int? pageNumber, int? pageSize, int userId, out int count)
         {
-            IQueryable<SuggestPrice> result = suggestPriceRepository.GetAll(out count , sp => sp.User_Id == userId , (pageNumber - 1) * pageSize , pageSize , sp => sp.)
-            return null;
+            IQueryable<SuggestPrice> result = suggestPriceRepository.Get();
+
+            result = result.Where(sp => sp.User_Id == userId).OrderByDescending(sp => sp.DateCreated);
+
+            count = result.Count();
+
+            if (pageNumber.HasValue && pageSize.HasValue)
+                result = result.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            else
+                result = result.OrderBy(sp => Guid.NewGuid()).Take(10);
+
+            return result.ToList();
         }
     }
 }
