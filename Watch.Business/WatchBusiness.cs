@@ -17,18 +17,17 @@ namespace Watch.Business
         private readonly WatchBookmarkRepository bookmarkRepository;
         private readonly BrandRepository brandRepository;
         private readonly UnitOfWork unitOfWork;
-        private readonly StoreRepository storeRepository;
         private readonly SellerRepository sellerRepository;
         private readonly SuggestPriceRepository suggestPriceRepository;
         private readonly UserRepository userRepository;
 
-        public WatchBusiness(BrandRepository brandRepository, WatchRepository watchRepository, WatchBookmarkRepository bookmarkRepository, StoreRepository storeRepository, SellerRepository sellerRepository, SuggestPriceRepository suggestPriceRepository, UserRepository userRepository, UnitOfWork unitOfWork)
+        public WatchBusiness(BrandRepository brandRepository, WatchRepository watchRepository, WatchBookmarkRepository bookmarkRepository, SellerRepository sellerRepository, SuggestPriceRepository suggestPriceRepository, UserRepository userRepository, UnitOfWork unitOfWork)
         {
             this.watchRepository = watchRepository;
             this.bookmarkRepository = bookmarkRepository;
             this.brandRepository = brandRepository;
             this.unitOfWork = unitOfWork;
-            this.storeRepository = storeRepository;
+
             this.sellerRepository = sellerRepository;
             this.suggestPriceRepository = suggestPriceRepository;
             this.userRepository = userRepository;
@@ -123,7 +122,7 @@ namespace Watch.Business
 
         public List<Models.Watch> GetStoreWatches(int storeId, int? pageNumber, int? pageSize, out int count)
         {
-            Store store = storeRepository.GetById(storeId);
+            Seller store = sellerRepository.GetById(storeId);
 
             if (store == null)
                 throw new NotFoundException("فروشگاه");
@@ -295,7 +294,7 @@ namespace Watch.Business
             return listedResult;
         }
 
-        public void SuggestPrice(int watchId, int userId, decimal suggestedPrice , string description = null)
+        public void SuggestPrice(int watchId, int userId, decimal suggestedPrice, string description = null)
         {
             Models.Watch watch = watchRepository.Get().Where(w => w.Id == watchId).Include(w => w.SuggestedPrices).FirstOrDefault();
 
@@ -323,7 +322,7 @@ namespace Watch.Business
 
         public Seller GetSellerByUserId(int userId)
         {
-            Seller seller = sellerRepository.Get().FirstOrDefault(s => s.UserId == userId);
+            Seller seller = sellerRepository.Get().FirstOrDefault(s => s.User_Id == userId);
 
             if (seller == null)
                 throw new NotFoundException("فروشنده");
@@ -360,7 +359,7 @@ namespace Watch.Business
             if (pageNumber.HasValue && pageSize.HasValue)
                 result = result.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
             else
-                result = result.Take(10);
+                result = result.OrderBy(w => Guid.NewGuid()).Take(10);
 
             return result.ToList();
         }
@@ -383,7 +382,7 @@ namespace Watch.Business
 
         public List<Models.Watch> GetStoreWatches(int storeId, SortBy? sortBy, int? pageNumber, int? pageSize, out int count)
         {
-            Store store = storeRepository.Get().Where(s => s.Id == storeId).Include(s => s.StoreBookmarks).FirstOrDefault();
+            Seller store = sellerRepository.Get().Where(s => s.Id == storeId).Include(s => s.StoreBookmarks).FirstOrDefault();
 
             if (store == null)
                 throw new NotFoundException("فروشگاه");
@@ -406,12 +405,24 @@ namespace Watch.Business
         #endregion []
 
         #region [Address]
-        public void AddAddress(int userId, string city, string fullAddress, string phoneNumber)
+        public void AddAddress(int userId, string city, string fullAddress, string phoneNumber, string name, string family, string mainPhoneNumner, Models.Gender? gender)
         {
             User user = userRepository.GetById(userId);
 
             if (user == null)
                 throw new NotFoundException("کاربر");
+
+            if (!string.IsNullOrEmpty(name))
+                user.Name = name;
+
+            if (!string.IsNullOrEmpty(family))
+                user.Family = family;
+
+            if (!string.IsNullOrEmpty(phoneNumber))
+                user.PhoneNumber = phoneNumber;
+
+            if (gender != null)
+                user.Gender = gender;
 
             user.Addresses.Add(
                 new Address
@@ -421,6 +432,9 @@ namespace Watch.Business
                     PhoneNumber = phoneNumber,
                 });
 
+            userRepository.Update(user);
+
+            unitOfWork.Commit();
         }
 
         public List<Address> GetAddressList(int userId)

@@ -32,6 +32,14 @@ namespace Watch.DataAccess.Identity
             });
         }
 
+        public override Task<User> FindByNameAsync(string userName)
+        {
+            return Task.Run(() =>
+            {
+                return Store.FindByNameAsync(userName).Result;
+            });
+        }
+
         public async override Task<ClaimsIdentity> CreateIdentityAsync(User user, string authenticationType)
         {
             var identity = await base.CreateIdentityAsync(user, authenticationType);
@@ -39,7 +47,7 @@ namespace Watch.DataAccess.Identity
             foreach (var role in user.UserRoles)
                 identity.AddClaim(new Claim(ClaimTypes.Role, role.RoleId.ToString()));
             return identity;
-            
+
         }
 
         public override Task<IdentityResult> CreateAsync(User user, string password)

@@ -16,6 +16,12 @@ namespace Watch.Api
         private readonly RequestBusiness requestBusiness;
         private readonly UserManager userManager;
 
+        public RequestController(UserManager userManager, RequestBusiness requestBusiness)
+        {
+            this.userManager = userManager;
+            this.requestBusiness = requestBusiness;
+        }
+
         public async Task<IResponse> OrderWatch(int addressId, int watchId, int count = 1, bool buyerProtection = false)
         {
             try

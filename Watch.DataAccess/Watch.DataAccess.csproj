@@ -177,7 +177,6 @@
     <Compile Include="Repositories\RequestRepository.cs" />
     <Compile Include="Repositories\RoleRepository.cs" />
     <Compile Include="Repositories\SellerRepository.cs" />
-    <Compile Include="Repositories\StoreRepository.cs" />
     <Compile Include="Repositories\SuggestPriceRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Repositories\WatchRepository.cs" />

@@ -41,6 +41,8 @@ namespace Watch
 
             builder.RegisterType<WatchBusiness>().InstancePerRequest();
             builder.RegisterType<RequestBusiness>().InstancePerRequest();
+            builder.RegisterType<ProfileBusiness>().InstancePerRequest();
+            builder.RegisterType<BookMarkBusiness>().InstancePerRequest();
 
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().AsSelf().InstancePerRequest();
             builder.RegisterType<WatchContext>().As<DbContext>().AsSelf().InstancePerRequest();
@@ -55,7 +57,6 @@ namespace Watch
             builder.RegisterType<ImageRepository>().InstancePerRequest();
             builder.RegisterType<WatchBookmarkRepository>().InstancePerRequest();
             builder.RegisterType<BrandRepository>().InstancePerRequest();
-            builder.RegisterType<StoreRepository>().InstancePerRequest();
             builder.RegisterType<SuggestPriceRepository>().InstancePerRequest();
             builder.RegisterType<UserRoleRepository>().InstancePerRequest();
 

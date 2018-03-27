@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Address.cs" />
+    <Compile Include="Enum\Answer.cs" />
     <Compile Include="WatchBookmark.cs" />
     <Compile Include="Brand.cs" />
     <Compile Include="Enum\AddressType.cs" />
@@ -57,7 +58,6 @@
     <Compile Include="Request.cs" />
     <Compile Include="Role.cs" />
     <Compile Include="Seller.cs" />
-    <Compile Include="Store.cs" />
     <Compile Include="StoreBookmark.cs" />
     <Compile Include="SuggestPrice.cs" />
     <Compile Include="User.cs" />

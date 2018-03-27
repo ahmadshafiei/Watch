@@ -198,7 +198,9 @@
   <ItemGroup>
     <Compile Include="Api\AuthenticationController.cs" />
     <Compile Include="Api\BookMarkController.cs" />
+    <Compile Include="Api\ProfileController.cs" />
     <Compile Include="Api\RequestController.cs" />
+    <Compile Include="Api\StoreController.cs" />
     <Compile Include="Api\WatchController.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />

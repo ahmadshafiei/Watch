@@ -156,7 +156,7 @@ namespace Watch.Api
             }
             catch (Exception e)
             {
-                return new Response<Store>
+                return new Response<Models.Watch>
                 {
                     Success = false,
                     Message = e.Message
@@ -371,12 +371,12 @@ namespace Watch.Api
         #region [Address]
         [HttpPost]
         [Authorize(Roles = "Admin,Seller,User")]
-        public async Task<IResponse> AddAddress(Address address)
+        public async Task<IResponse> AddAddress(Address address , string name = null , string family = null , string phoneNumber = null , Models.Gender? gender = null)
         {
             try
             {
                 User user = await userManager.FindByNameAsync(User.Identity.Name);
-                watchBusiness.AddAddress(user.Id, address.City, address.FullAddress, address.PhoneNumber);
+                watchBusiness.AddAddress(user.Id, address.City, address.FullAddress, address.PhoneNumber , name , family , phoneNumber , gender);
                 return new Response<Address>();
             }
             catch (Exception e)
