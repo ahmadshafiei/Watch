@@ -39,8 +39,8 @@ namespace Watch.Models
         public int? Brand_Id { get; set; }
         [ForeignKey("Brand_Id")]
         public Brand Brand { get; set; }
-        public int? User_Id { get; set; }
-        [ForeignKey("User_Id")]
+        public int? OwnerUser_Id { get; set; }
+        [ForeignKey("OwnerUser_Id")]
         public User OwnerUser { get; set; }
         public List<Request> Requests { get; set; }
         public List<Image> Images { get; set; }

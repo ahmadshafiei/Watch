@@ -13,11 +13,17 @@ namespace Watch.DataAccess.Identity
     {
         public UserManager(IUserStore<User, int> store) : base(store)
         {
+            EmailService = new EmailService();
         }
 
         public override Task SendSmsAsync(int userId, string message)
         {
-            return base.SendSmsAsync(userId, message);
+            throw new NotImplementedException();
+        }
+
+        public override Task SendEmailAsync(int userId, string subject, string body)
+        {
+            throw new NotImplementedException();
         }
 
         public override Task<User> FindAsync(string userName, string password)

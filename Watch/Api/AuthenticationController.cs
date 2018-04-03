@@ -3,9 +3,11 @@ using Microsoft.Owin.Security.Cookies;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using Watch.Business;
 using Watch.DataAccess.Identity;
 using Watch.DataAccess.Repositories;
 using Watch.Models;
@@ -17,6 +19,7 @@ namespace Watch.Api
         private readonly UserManager userManager;
         private readonly UserStore userStore;
         private readonly UserRepository userRepository;
+        private readonly AuthenticationBusiness authenticationBusiness;
 
         private IAuthenticationManager AuthenticationManager
         {
@@ -26,31 +29,57 @@ namespace Watch.Api
             }
         }
 
-        public AuthenticationController(UserRepository userRepository, UserStore userStore)
+        public AuthenticationController(UserRepository userRepository, UserStore userStore, AuthenticationBusiness authenticationBusiness)
         {
             this.userStore = userStore;
             this.userRepository = userRepository;
             this.userManager = new UserManager(userStore);
+            this.authenticationBusiness = authenticationBusiness;
         }
 
-        public async Task<IHttpActionResult> Register(User user)
+        public async Task<IResponse> Register(User user)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    StringBuilder stringBuilder = new StringBuilder();
 
-            var identity = await userManager.CreateAsync(user, user.Password);
-            identity = await userManager.AddToRoleAsync(user.Id, "User");
+                    foreach (var error in ModelState.Keys)
+                        stringBuilder.Append($"{error} : {ModelState[error]} , ");
 
-            if (!identity.Succeeded)
-                return BadRequest(String.Join(" - ", identity.Errors));
+                    throw new Exception(stringBuilder.ToString());
+                }
 
-            return Ok(identity);
+                await authenticationBusiness.Register(user);
+                return new Response<User>();
+            }
+            catch (Exception e)
+            {
+                return new Response<User>
+                {
+                    Success = false,
+                    Message = e.Message
+                };
+            }
         }
 
         [HttpGet]
-        public Task ResetPassword(string email)
+        public async Task<IResponse> ResetPassword(string email)
         {
-            return Task.FromResult(0);
+            try
+            {
+                await authenticationBusiness.ResetPassword(email);
+                return new Response<User>();
+            }
+            catch (Exception e)
+            {
+                return new Response<User>
+                {
+                    Success = false,
+                    Message = e.Message
+                };
+            }
         }
     }
 }

@@ -129,7 +129,7 @@ namespace Watch.Business
 
             int userId = store.User_Id;
 
-            IQueryable<Models.Watch> result = watchRepository.Get().Where(w => w.User_Id == userId).OrderByDescending(w => w.DateCreated);
+            IQueryable<Models.Watch> result = watchRepository.Get().Where(w => w.OwnerUser_Id == userId).OrderByDescending(w => w.DateCreated);
 
             count = result.Count();
 
@@ -387,7 +387,7 @@ namespace Watch.Business
             if (store == null)
                 throw new NotFoundException("فروشگاه");
 
-            IQueryable<Models.Watch> result = watchRepository.Get().Where(w => w.User_Id == store.User_Id).Include(w => w.Brand);
+            IQueryable<Models.Watch> result = watchRepository.Get().Where(w => w.OwnerUser_Id == store.User_Id).Include(w => w.Brand);
 
             if (sortBy == SortBy.Popularity)
                 result = result.OrderByDescending(w => w.WatchBookmarks.Count);

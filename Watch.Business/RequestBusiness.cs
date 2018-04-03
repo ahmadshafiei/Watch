@@ -13,7 +13,12 @@ namespace Watch.Business
     {
         private readonly UserRepository userRepository;
 
-        public void OrderWatch(int userId , int addressId , int watchId , int count, bool buyerProtection)
+        public RequestBusiness(UserRepository userRepository)
+        {
+            this.userRepository = userRepository;
+        }
+
+        public void OrderWatch(int userId, int addressId, int watchId, int count, bool buyerProtection)
         {
             User user = userRepository.GetById(userId);
 

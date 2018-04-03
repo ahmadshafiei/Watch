@@ -22,38 +22,81 @@ namespace Watch.Api
         }
 
         [Authorize(Roles = "User")]
+        [HttpGet]
         public IResponse BookmarkWatch(int watchId)
         {
             try
             {
                 int userId = userRepository.Get().Where(u => u.UserName == User.Identity.Name).Single().Id;
+
                 bookMarkBusiness.BookmarkWatch(userId, watchId);
+
                 return new Response<WatchBookmark>();
             }
             catch (Exception e)
             {
                 return new Response<WatchBookmark>() { Success = false, Message = e.Message };
             }
-
         }
 
         [Authorize(Roles = "User")]
+        [HttpGet]
         public IResponse GetAllWatchBookmarks()
         {
             try
             {
                 int userId = userRepository.Get().Where(u => u.UserName == User.Identity.Name).Single().Id;
+
                 PagedResult<int> result = new PagedResult<int>
                 {
-                    Data = bookMarkBusiness.GetAllBookmarks(userId)
+                    Data = bookMarkBusiness.GetAllWatchBookmarks(userId)
                 };
+
                 return new Response<int>() { Result = result };
             }
             catch (Exception e)
             {
                 return new Response<int>() { Success = false, Message = e.Message };
             }
+        }
 
+        [Authorize(Roles = "User")]
+        [HttpGet]
+        public IResponse BookmarkStore(int storeId)
+        {
+            try
+            {
+                int userId = userRepository.Get().Where(u => u.UserName == User.Identity.Name).Single().Id;
+
+                bookMarkBusiness.BookmarkStore(userId, storeId);
+
+                return new Response<StoreBookmark>();
+            }
+            catch (Exception e)
+            {
+                return new Response<StoreBookmark>() { Success = false, Message = e.Message };
+            }
+        }
+
+        [Authorize(Roles = "User")]
+        [HttpGet]
+        public IResponse GetAllStoreBookmarks()
+        {
+            try
+            {
+                int userId = userRepository.Get().Where(u => u.UserName == User.Identity.Name).Single().Id;
+
+                PagedResult<int> result = new PagedResult<int>
+                {
+                    Data = bookMarkBusiness.GetAllStoreBookmarks(userId)
+                };
+
+                return new Response<int>() { Result = result };
+            }
+            catch (Exception e)
+            {
+                return new Response<int>() { Success = false, Message = e.Message };
+            }
         }
     }
 }

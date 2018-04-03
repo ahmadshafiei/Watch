@@ -59,6 +59,7 @@ namespace Watch
             builder.RegisterType<BrandRepository>().InstancePerRequest();
             builder.RegisterType<SuggestPriceRepository>().InstancePerRequest();
             builder.RegisterType<UserRoleRepository>().InstancePerRequest();
+            builder.RegisterType<StoreBookmarkRepository>().InstancePerRequest();
 
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
 

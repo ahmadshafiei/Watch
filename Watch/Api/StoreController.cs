@@ -24,7 +24,12 @@ namespace Watch.Api
         {
             PagedResult<Seller> result = new PagedResult<Seller>();
 
-            result.Data = storeBusiness.GetAllStores(pageNumber, pageSize, out result.Count);
+            string userName = string.Empty;
+
+            if (User.Identity.IsAuthenticated)
+                userName = User.Identity.Name;
+
+            result.Data = storeBusiness.GetAllStores(pageNumber, pageSize , userName, out result.Count);
 
             return new Response<Seller>
             {

@@ -12,22 +12,35 @@ namespace Watch.Business
     public class BookMarkBusiness
     {
         private readonly WatchBookmarkRepository watchBookmarkRepository;
+        private readonly StoreBookmarkRepository storeBookmarkRepository;
         private readonly UnitOfWork unitOfWork;
 
-        public BookMarkBusiness(WatchBookmarkRepository watchBookmarkRepository , UnitOfWork unitOfWork)
+        public BookMarkBusiness(WatchBookmarkRepository watchBookmarkRepository , StoreBookmarkRepository storeBookmarkRepository, UnitOfWork unitOfWork )
         {
             this.watchBookmarkRepository = watchBookmarkRepository;
+            this.storeBookmarkRepository = storeBookmarkRepository;
             this.unitOfWork = unitOfWork;
         }
         public void BookmarkWatch(int userId, int watchId)
         {
-            watchBookmarkRepository.Insert(new WatchBookmark() { User_Id = userId, Watch_Id = watchId });
+            watchBookmarkRepository.Insert(new WatchBookmark { User_Id = userId, Watch_Id = watchId });
             unitOfWork.Commit();
         }
 
-        public List<int> GetAllBookmarks(int userId)
+        public List<int> GetAllWatchBookmarks(int userId)
         {
-            return watchBookmarkRepository.Get().Where(b => b.User_Id == userId).Select(b => b.Watch_Id).ToList();
+            return watchBookmarkRepository.Get().Where(wb => wb.User_Id == userId).Select(wb => wb.Watch_Id).ToList();
+        }
+
+        public void BookmarkStore(int userId, int storeId)
+        {
+            storeBookmarkRepository.Insert(new StoreBookmark { User_Id = userId , Seller_Id = storeId});
+            unitOfWork.Commit();
+        }
+
+        public List<int> GetAllStoreBookmarks(int userId)
+        {
+            return storeBookmarkRepository.Get().Where(sb => sb.User_Id == userId).Select(sb => sb.Seller_Id).ToList();
         }
     }
 }

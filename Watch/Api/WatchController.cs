@@ -38,7 +38,7 @@ namespace Watch.Api
             try
             {
                 User user = await userManager.FindByNameAsync(User.Identity.Name);
-                watch.User_Id = user.Id;
+                watch.OwnerUser_Id = user.Id;
                 watchBusiness.InsertWatch(watch, watch.MainImage, watch.SubImages);
                 return new Response<Models.Watch>();
             }

@@ -19,7 +19,7 @@ namespace Watch
             app.UseOAuthBearerTokens(new OAuthAuthorizationServerOptions()
             {
                 TokenEndpointPath = new PathString("/Token"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromSeconds(30),
+                AccessTokenExpireTimeSpan = TimeSpan.FromDays(30),
                 Provider = new TokenProvider("self"),
                 AllowInsecureHttp = true //Set to false on deployment
             });

@@ -38,22 +38,23 @@ namespace Watch.Api
                             Count = 1,
                             Data = new List<Seller>
                             {
-                                profileBusiness.GetSellerProfileInfo(user.Id)
+                                profileBusiness.GetProfileInfo(user.Id, true)
                             }
                         }
                     };
 
-                return new Response<User>
-                {
-                    Result = new PagedResult<User>
+                else
+                    return new Response<User>
                     {
-                        Count = 1,
-                        Data = new List<User>
+                        Result = new PagedResult<User>
                         {
-                            profileBusiness.GetUserProfileInfo(user.Id)
+                            Count = 1,
+                            Data = new List<User>
+                            {
+                                profileBusiness.GetProfileInfo(user.Id, false)
+                            }
                         }
-                    }
-                };
+                    };
             }
             catch (Exception e)
             {
@@ -76,7 +77,14 @@ namespace Watch.Api
             {
                 PagedResult<SuggestPrice> result = new PagedResult<SuggestPrice>();
 
-                result.Data = profileBusiness.GetSuggestedPrices(pageNumber, pageSize, user.Id, out result.Count);
+                bool isSeller;
+
+                if (await userManager.IsInRoleAsync(user.Id, "Seller"))
+                    isSeller = true;
+                else
+                    isSeller = false;
+
+                result.Data = profileBusiness.GetSuggestedPrices(pageNumber, pageSize, user.Id, isSeller, out result.Count);
 
                 return new Response<SuggestPrice>
                 {

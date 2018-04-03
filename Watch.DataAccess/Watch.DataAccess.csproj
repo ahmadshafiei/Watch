@@ -163,11 +163,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Identity\EmailService.cs" />
     <Compile Include="Identity\TokenProvider.cs" />
     <Compile Include="Identity\UserManager.cs" />
     <Compile Include="Identity\UserStore.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\StoreBookmarkRepository.cs" />
     <Compile Include="Repositories\UserRoleRepository.cs" />
     <Compile Include="Repositories\WatchBookmarkRepository.cs" />
     <Compile Include="Repositories\BrandRepository.cs" />

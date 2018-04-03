@@ -26,7 +26,22 @@ namespace Watch.Business
             this.suggestPriceRepository = suggestPriceRepository;
         }
 
-        public User GetUserProfileInfo(int userId)
+        //public User GetUserProfileInfo(int userId)
+        //{
+        //    User user = userRepository.Get()
+        //        .Include(u => u.BookmarkedStores)
+        //        .Include(u => u.BookmarkedWatches)
+        //        .Include(u => u.Requests)
+        //        .Include(u => u.SuggestedPrices)
+        //        .FirstOrDefault(u => u.Id == userId);
+
+        //    if (user == null)
+        //        throw new NotFoundException("کاربر");
+
+        //    return user;
+        //}
+
+        public dynamic GetProfileInfo(int userId, bool isSeller)
         {
             User user = userRepository.Get()
                 .Include(u => u.BookmarkedStores)
@@ -37,38 +52,31 @@ namespace Watch.Business
 
             if (user == null)
                 throw new NotFoundException("کاربر");
+
+            if (isSeller)
+            {
+                Seller seller = sellerRepository.Get()
+                .FirstOrDefault(s => s.User_Id == user.Id);
+
+                if (seller == null)
+                    throw new NotFoundException("فروشنده");
+
+                seller.User = user;
+
+                return seller;
+            }
 
             return user;
         }
 
-        public Seller GetSellerProfileInfo(int userId)
-        {
-            User user = userRepository.Get()
-                .Include(u => u.BookmarkedStores)
-                .Include(u => u.BookmarkedWatches)
-                .Include(u => u.Requests)
-                .Include(u => u.SuggestedPrices)
-                .FirstOrDefault(u => u.Id == userId);
-
-            if (user == null)
-                throw new NotFoundException("کاربر");
-
-            Seller seller = sellerRepository.Get()
-                .FirstOrDefault(s => s.User_Id == user.Id);
-
-            if (seller == null)
-                throw new NotFoundException("فروشنده");
-
-            seller.User = user;
-
-            return seller;
-        }
-
-        public List<SuggestPrice> GetSuggestedPrices(int? pageNumber, int? pageSize, int userId, out int count)
+        public List<SuggestPrice> GetSuggestedPrices(int? pageNumber, int? pageSize, int userId, bool isSeller, out int count)
         {
             IQueryable<SuggestPrice> result = suggestPriceRepository.Get();
 
-            result = result.Where(sp => sp.User_Id == userId).OrderByDescending(sp => sp.DateCreated);
+            if (isSeller)
+                result = result.Include(sp => sp.Watch).Where(sp => sp.Watch.OwnerUser_Id == userId).OrderByDescending(sp => sp.DateCreated);
+            else
+                result = result.Where(sp => sp.User_Id == userId).OrderByDescending(sp => sp.DateCreated);
 
             count = result.Count();
 
