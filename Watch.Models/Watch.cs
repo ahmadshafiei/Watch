@@ -34,7 +34,7 @@ namespace Watch.Models
         public Gender Gender { get; set; }
         public Movement? CounterMovement { get; set; }
         public Condition Condition { get; set; }
-        public DateTime Year { get; set; }
+        public string Year { get; set; }
         public DateTime DateCreated { get; set; }
         public int? Brand_Id { get; set; }
         [ForeignKey("Brand_Id")]

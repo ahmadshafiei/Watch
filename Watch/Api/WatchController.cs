@@ -98,7 +98,7 @@ namespace Watch.Api
         #region [Watch , Brand]
 
         [HttpGet]
-        public IResponse GetBestProducts(int? pageNumber = null, int? pageSize = null, int[] brands = null)
+        public IResponse GetBestProducts(int[] brands, int? pageNumber = null, int? pageSize = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
             result.Data = watchBusiness.GetBestProducts(pageNumber, pageSize, brands, out result.Count);
@@ -165,7 +165,7 @@ namespace Watch.Api
         }
 
         [HttpGet]
-        public IResponse GetLatestWatches(int? pageNumber = null, int? pageSize = null, int[] brands = null)
+        public IResponse GetLatestWatches(int[] brands, int? pageNumber = null, int? pageSize = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
             result.Data = watchBusiness.GetLatestProducts(pageNumber, pageSize, brands, out result.Count);
@@ -176,7 +176,7 @@ namespace Watch.Api
         }
 
         [HttpGet]
-        public IResponse GetTopSellWatches(int? pageNumber = null, int? pageSize = null , int[] brands = null)
+        public IResponse GetTopSellWatches(int[] brands, int? pageNumber = null, int? pageSize = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
             result.Data = watchBusiness.GetTopSellWatches(pageNumber, pageSize, brands, out result.Count);
@@ -221,7 +221,7 @@ namespace Watch.Api
                 if (User.Identity.IsAuthenticated)
                     username = User.Identity.Name;
 
-                Models.Watch watch = watchBusiness.GetWatchDetail(watchId , username);
+                Models.Watch watch = watchBusiness.GetWatchDetail(watchId, username);
                 return new Response<Models.Watch>
                 {
                     Result = new PagedResult<Models.Watch>
@@ -371,12 +371,12 @@ namespace Watch.Api
         #region [Address]
         [HttpPost]
         [Authorize(Roles = "Admin,Seller,User")]
-        public async Task<IResponse> AddAddress(Address address , string name = null , string family = null , string phoneNumber = null , Models.Gender? gender = null)
+        public async Task<IResponse> AddAddress(Address address, string name = null, string family = null, string mainPhoneNumber = null, Models.Gender? gender = null)
         {
             try
             {
                 User user = await userManager.FindByNameAsync(User.Identity.Name);
-                watchBusiness.AddAddress(user.Id, address.City, address.FullAddress, address.PhoneNumber , name , family , phoneNumber , gender);
+                watchBusiness.AddAddress(user.Id, address.City, address.FullAddress, address.PhoneNumber, name, family, mainPhoneNumber, gender);
                 return new Response<Address>();
             }
             catch (Exception e)

@@ -71,7 +71,7 @@ namespace Watch.Api
         [Authorize(Roles = "User,Seller,Admin")]
         public async Task<IResponse> GetSuggestedPrices(int? pageNumber = null, int? pageSize = null)
         {
-            User user = await userManager.FindByEmailAsync(User.Identity.Name);
+            User user = await userManager.FindByNameAsync(User.Identity.Name);
 
             try
             {

@@ -62,9 +62,23 @@ namespace Watch.Business
                     throw new NotFoundException("فروشنده");
 
                 seller.User = user;
+                seller.User.Password = null;
+                seller.User.UserRoles = null;
+                seller.User.BookmarkedWatches.ForEach(bw => bw.User = null);
+                seller.User.BookmarkedStores.ForEach(bs => bs.User = null);
+                seller.User.Requests.ForEach(r => r.User = null);
+                seller.User.SuggestedPrices.ForEach(s => s.User = null);
+
 
                 return seller;
             }
+
+            user.UserRoles = null;
+            user.Password = null;
+            user.BookmarkedWatches.ForEach(bw => bw.User = null);
+            user.BookmarkedStores.ForEach(bs => bs.User = null);
+            user.Requests.ForEach(r => r.User = null);
+            user.SuggestedPrices.ForEach(s => s.User = null);
 
             return user;
         }

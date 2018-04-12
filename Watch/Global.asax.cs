@@ -39,10 +39,12 @@ namespace Watch
             
             var config = GlobalConfiguration.Configuration;
 
+            builder.RegisterType<AuthenticationBusiness>().InstancePerRequest();
             builder.RegisterType<WatchBusiness>().InstancePerRequest();
             builder.RegisterType<RequestBusiness>().InstancePerRequest();
             builder.RegisterType<ProfileBusiness>().InstancePerRequest();
             builder.RegisterType<BookMarkBusiness>().InstancePerRequest();
+            builder.RegisterType<StoreBusiness>().InstancePerRequest();
 
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().AsSelf().InstancePerRequest();
             builder.RegisterType<WatchContext>().As<DbContext>().AsSelf().InstancePerRequest();

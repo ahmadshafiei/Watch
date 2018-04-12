@@ -24,6 +24,10 @@ namespace Watch.Business
         public async Task Register(User user)
         {
             var identity = await userManager.CreateAsync(user, user.Password);
+
+            if (!identity.Succeeded)
+                throw new Exception(String.Join(" - ", identity.Errors));
+
             identity = await userManager.AddToRoleAsync(user.Id, "User");
 
             if (!identity.Succeeded)

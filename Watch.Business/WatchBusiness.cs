@@ -39,13 +39,14 @@ namespace Watch.Business
         {
             watch.MainImagePath = Utility.Image.Save(mainImage);
 
-            foreach (byte[] img in images)
-            {
-                watch.Images.Add(new Image
+            if (images != null)
+                foreach (byte[] img in images)
                 {
-                    Path = Utility.Image.Save(mainImage)
-                });
-            }
+                    watch.Images.Add(new Image
+                    {
+                        Path = Utility.Image.Save(img)
+                    });
+                }
 
             watchRepository.Insert(watch);
             unitOfWork.Commit();
@@ -53,12 +54,19 @@ namespace Watch.Business
 
         public void DeleteWatch(int id)
         {
-            watchRepository.Delete(watchRepository.GetById(id));
+            Models.Watch watch = watchRepository.GetById(id);
+            if (watch == null)
+                throw new NotFoundException("ساعت");
+
+            watchRepository.Delete(watch);
             unitOfWork.Commit();
         }
 
         public void UpdateWatch(Models.Watch watch)
         {
+            if (!watchRepository.Get().Any(w => w.Id == watch.Id))
+                throw new NotFoundException("ساعت");
+
             watchRepository.Update(watch);
             unitOfWork.Commit();
         }
@@ -149,7 +157,7 @@ namespace Watch.Business
             if (brand == null)
                 throw new NotFoundException("برند");
 
-            IQueryable<Models.Watch> result = watchRepository.Get().Where(w => w.Brand_Id == brandId);
+            IQueryable<Models.Watch> result = watchRepository.Get().Where(w => w.Brand_Id == brandId).OrderByDescending(w => w.DateCreated);
 
             count = result.Count();
 
@@ -157,6 +165,10 @@ namespace Watch.Business
                 result = result.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
             else
                 result = result.OrderBy(w => Guid.NewGuid()).Take(10); //Transpose records
+
+            foreach (var item in result) //Prevent self referencing loop
+                item.Brand.Watches = null;
+            
 
             return result.ToList();
         }
@@ -430,6 +442,9 @@ namespace Watch.Business
                     City = city,
                     FullAddress = fullAddress,
                     PhoneNumber = phoneNumber,
+                    User_Id = userId,
+                    Type = AddressType.UserAddress
+                    
                 });
 
             userRepository.Update(user);
@@ -446,6 +461,9 @@ namespace Watch.Business
 
             if (user.Addresses == null)
                 throw new NotFoundException("آدرس کاربر");
+
+            foreach (var item in user.Addresses) //Prevent self referencing loop
+                item.User = null;
 
             return user.Addresses;
         }

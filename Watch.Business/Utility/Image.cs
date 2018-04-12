@@ -11,6 +11,8 @@ namespace Watch.Business.Utility
     {
         public static string Save(byte[] image)
         {
+            if (image == null || image.Count() == 0)
+                return null;
             MemoryStream ms = new MemoryStream(image);
             var mainImg = System.Drawing.Image.FromStream(ms);
 
