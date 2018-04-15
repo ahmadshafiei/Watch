@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Watch.DataAccess.Identity;
 using Watch.DataAccess.Repositories;
+using Watch.DataAccess.UnitOfWork;
 using Watch.Models;
 
 namespace Watch.Business
@@ -14,11 +15,19 @@ namespace Watch.Business
     {
         private readonly SellerRepository sellerRepository;
         private readonly UserRepository userRepository;
+        private readonly UnitOfWork unitOfWork;
 
-        public StoreBusiness(SellerRepository sellerRepository, UserRepository userRepository)
+        public StoreBusiness(SellerRepository sellerRepository, UserRepository userRepository, UnitOfWork unitOfWork)
         {
             this.sellerRepository = sellerRepository;
             this.userRepository = userRepository;
+            this.unitOfWork = unitOfWork;
+        }
+
+        public void RegisterSeller(Seller seller)
+        {
+            sellerRepository.Insert(seller);
+            unitOfWork.Commit();
         }
 
         public List<Seller> GetAllStores(int? pageNumber, int? pageSize, string userName, out int count)
@@ -42,6 +51,20 @@ namespace Watch.Business
             }
 
             return result.ToList();
+        }
+
+        public List<User> GetAllUsers(int? pageNumber, string searchExp, out int count)
+        {
+            searchExp = searchExp ?? "";
+
+            IQueryable<User> result = userRepository.Get().Where(u => u.UserName.Contains(searchExp) && u.UserRoles.Any(ur => ur.Role.Name == "User") && u.UserRoles.Count == 1).OrderBy(u => u.UserName);
+
+            count = result.Count();
+
+            if (pageNumber.HasValue)
+                result = result.Skip((pageNumber.Value - 1) * 10).Take(10);
+
+            return result.ToList().Select(u => new User { Id = u.Id, UserName = u.UserName }).ToList();
         }
     }
 }

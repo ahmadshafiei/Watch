@@ -29,12 +29,33 @@ namespace Watch.Api
             if (User.Identity.IsAuthenticated)
                 userName = User.Identity.Name;
 
-            result.Data = storeBusiness.GetAllStores(pageNumber, pageSize , userName, out result.Count);
+            result.Data = storeBusiness.GetAllStores(pageNumber, pageSize, userName, out result.Count);
 
             return new Response<Seller>
             {
                 Result = result
             };
         }
+
+        #region [RegisterSeller-AdminPanel]
+
+        [Authorize(Roles = "Admin")]
+        public IResponse RegisterSeller(Seller seller)
+        {
+            storeBusiness.RegisterSeller(seller);
+            return new Response<Seller>();
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IResponse GetAllUsers(int? pageNumber, string searchExp)
+        {
+            PagedResult<User> result = new PagedResult<User>();
+            result.Data = storeBusiness.GetAllUsers(pageNumber, searchExp, out result.Count);
+            return new Response<User>
+            {
+                Result = result
+            };
+        }
+        #endregion
     }
 }

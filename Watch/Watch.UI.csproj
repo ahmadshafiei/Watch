@@ -52,8 +52,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autofac.3.5.0\lib\net40\Autofac.dll</HintPath>
+    <Reference Include="Autofac, Version=4.0.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.0.1\lib\net45\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.Mvc5.4.0.2\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="Autofac.Integration.Owin, Version=4.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.Owin.4.0.0\lib\net45\Autofac.Integration.Owin.dll</HintPath>
@@ -210,6 +213,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -221,6 +225,14 @@
     <Compile Include="Utility\MD5Encrypter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AngularJs\Config.js" />
+    <Content Include="AngularJs\Controllers\loginCtrl.js" />
+    <Content Include="AngularJs\Controllers\registerSellerCtrl.js" />
+    <Content Include="AngularJs\Controllers\sellerListCtrl.js" />
+    <Content Include="AngularJs\Main.js" />
+    <Content Include="AngularJs\Services\authenticationService.js" />
+    <Content Include="AngularJs\Services\sellerService.js" />
+    <Content Include="assets\css\CustomizedRTL.css" />
     <Content Include="assets\css\dashboard.css" />
     <Content Include="assets\css\dashboard.rtl.css" />
     <Content Include="assets\fonts\feather\feather-webfont.svg" />
@@ -613,8 +625,14 @@
     <Content Include="assets\images\payments\westernunion.svg" />
     <Content Include="assets\images\payments\worldpay-dark.svg" />
     <Content Include="assets\images\payments\worldpay.svg" />
+    <Content Include="assets\js\angular\angular-cookies.js" />
+    <Content Include="assets\js\angular\angular-cookies.min.js" />
     <Content Include="assets\js\core.js" />
     <Content Include="assets\js\dashboard.js" />
+    <Content Include="assets\js\googleMap\ng-map.debug.js" />
+    <Content Include="assets\js\googleMap\ng-map.js" />
+    <Content Include="assets\js\googleMap\ng-map.min.js" />
+    <Content Include="assets\js\googleMap\ng-map.no-dependency.js" />
     <Content Include="assets\js\require.min.js" />
     <Content Include="assets\js\vendors\bootstrap.bundle.min.js" />
     <Content Include="assets\js\vendors\chart.bundle.min.js" />
@@ -631,6 +649,10 @@
     <Content Include="assets\plugins\charts-c3\js\d3.v3.min.js" />
     <Content Include="assets\plugins\charts-c3\plugin.css" />
     <Content Include="assets\plugins\charts-c3\plugin.js" />
+    <Content Include="assets\plugins\dropZone\ng-dropzone.css" />
+    <Content Include="assets\plugins\dropZone\ng-dropzone.js" />
+    <Content Include="assets\plugins\dropZone\ng-dropzone.min.css" />
+    <Content Include="assets\plugins\dropZone\ng-dropzone.min.js" />
     <Content Include="assets\plugins\fullcalendar\js\fullcalendar.min.js" />
     <Content Include="assets\plugins\fullcalendar\js\moment.min.js" />
     <Content Include="assets\plugins\fullcalendar\plugin.css" />
@@ -647,11 +669,41 @@
     <Content Include="assets\plugins\prismjs\js\prism.pack.js" />
     <Content Include="assets\plugins\prismjs\plugin.css" />
     <Content Include="assets\plugins\prismjs\plugin.js" />
+    <Content Include="assets\css\bootstrap\bootstrap-grid.css" />
+    <Content Include="assets\css\bootstrap\bootstrap-grid.min.css" />
+    <Content Include="assets\css\bootstrap\bootstrap-reboot.css" />
+    <Content Include="assets\css\bootstrap\bootstrap-reboot.min.css" />
+    <Content Include="assets\css\bootstrap\bootstrap.css" />
+    <Content Include="assets\css\bootstrap\bootstrap.min.css" />
+    <Content Include="assets\plugins\searchAndSelect\angular-searchAndSelect.js" />
+    <Content Include="assets\plugins\searchAndSelect\searchandselect.html" />
+    <Content Include="assets\plugins\searchAndSelect\style.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="assets\js\angular\angular-mocks.js" />
+    <Content Include="assets\js\angular\angular.js" />
+    <Content Include="assets\js\angular\angular.min.js" />
+    <Content Include="assets\js\angular\angular-ui-router.js" />
+    <Content Include="assets\js\angular\angular-ui-router.min.js" />
+    <Content Include="assets\js\bootstrap\bootstrap.bundle.js" />
+    <Content Include="assets\js\bootstrap\bootstrap.bundle.min.js" />
+    <Content Include="assets\js\bootstrap\bootstrap.js" />
+    <Content Include="assets\js\bootstrap\bootstrap.min.js" />
+    <Content Include="assets\js\bootstrap\esm\popper-utils.js" />
+    <Content Include="assets\js\bootstrap\esm\popper-utils.min.js" />
+    <Content Include="assets\js\bootstrap\esm\popper.js" />
+    <Content Include="assets\js\bootstrap\esm\popper.min.js" />
+    <Content Include="assets\js\bootstrap\popper-utils.js" />
+    <Content Include="assets\js\bootstrap\popper-utils.min.js" />
+    <Content Include="assets\js\bootstrap\popper.js" />
+    <Content Include="assets\js\bootstrap\popper.min.js" />
+    <Content Include="assets\js\bootstrap\umd\popper-utils.js" />
+    <Content Include="assets\js\bootstrap\umd\popper-utils.min.js" />
+    <Content Include="assets\js\bootstrap\umd\popper.js" />
+    <Content Include="assets\js\bootstrap\umd\popper.min.js" />
     <Content Include="Statics\400.html" />
     <Content Include="Statics\401.html" />
     <Content Include="Statics\403.html" />
@@ -880,8 +932,10 @@
     <Content Include="Statics\pricing-cards.html" />
     <Content Include="Statics\profile.html" />
     <Content Include="Statics\register.html" />
+    <Content Include="Statics\registerSeller.html" />
     <Content Include="Statics\rtl.html" />
     <Content Include="Statics\sample-cards.html" />
+    <Content Include="Statics\sellerList.html" />
     <Content Include="Statics\store.html" />
     <Content Include="Statics\users-list.html" />
     <Content Include="Web.config" />
@@ -911,8 +965,39 @@
     <Content Include="assets\plugins\iconfonts\fonts\weathericons\weathericons-regular-webfont.ttf" />
     <Content Include="assets\plugins\iconfonts\fonts\weathericons\weathericons-regular-webfont.woff" />
     <Content Include="assets\plugins\iconfonts\fonts\weathericons\weathericons-regular-webfont.woff2" />
+    <Content Include="assets\fonts\PersianFont\B Roya Bold.ttf" />
+    <Content Include="assets\fonts\PersianFont\B Roya.ttf" />
+    <Content Include="assets\css\bootstrap\bootstrap.min.css.map" />
+    <Content Include="assets\css\bootstrap\bootstrap.css.map" />
+    <Content Include="assets\css\bootstrap\bootstrap-reboot.min.css.map" />
+    <Content Include="assets\css\bootstrap\bootstrap-reboot.css.map" />
+    <Content Include="assets\css\bootstrap\bootstrap-grid.min.css.map" />
+    <Content Include="assets\css\bootstrap\bootstrap-grid.css.map" />
+    <Content Include="assets\plugins\dropZone\ng-dropzone.min.css.map" />
+    <Content Include="assets\plugins\dropZone\ng-dropzone.min.js.map" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Statics\demo\brand\tabler.sketch" />
+    <Content Include="assets\js\angular\angular.min.js.map" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="assets\js\bootstrap\umd\popper.min.js.map" />
+    <Content Include="assets\js\bootstrap\umd\popper.js.map" />
+    <Content Include="assets\js\bootstrap\umd\popper-utils.min.js.map" />
+    <Content Include="assets\js\bootstrap\umd\popper-utils.js.map" />
+    <Content Include="assets\js\bootstrap\README.md" />
+    <Content Include="assets\js\bootstrap\popper.min.js.map" />
+    <Content Include="assets\js\bootstrap\popper.js.map" />
+    <Content Include="assets\js\bootstrap\popper-utils.min.js.map" />
+    <Content Include="assets\js\bootstrap\popper-utils.js.map" />
+    <Content Include="assets\js\bootstrap\esm\popper.min.js.map" />
+    <Content Include="assets\js\bootstrap\esm\popper.js.map" />
+    <Content Include="assets\js\bootstrap\esm\popper-utils.min.js.map" />
+    <Content Include="assets\js\bootstrap\esm\popper-utils.js.map" />
+    <Content Include="assets\js\bootstrap\bootstrap.min.js.map" />
+    <Content Include="assets\js\bootstrap\bootstrap.js.map" />
+    <Content Include="assets\js\bootstrap\bootstrap.bundle.min.js.map" />
+    <Content Include="assets\js\bootstrap\bootstrap.bundle.js.map" />
+    <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Views\Layout\View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -937,6 +1022,9 @@
   <ItemGroup />
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="assets\js\bootstrap\index.d.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,0 +1,33 @@
+﻿body {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+div.order-lg-first > ul.nav.nav-tabs {
+    direction: rtl;
+}
+
+@font-face {
+    font-family: 'B Roya';
+    src: url('../fonts/PersianFont/B Roya.ttf') format('truetype');
+}
+
+* {
+    font-family: 'B Roya' !important;
+}
+
+div.dropdown-menu {
+    text-align: right;
+}
+
+div#chart-development-activity {
+    padding: 20px !important;
+}
+
+#siteName{
+    font-family:Georgia !important;
+}
+
+button[disabled="disabled"]{
+    cursor:not-allowed;
+}

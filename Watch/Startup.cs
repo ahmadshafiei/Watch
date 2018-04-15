@@ -16,6 +16,18 @@ namespace Watch
     {
         public void Configuration(IAppBuilder app)
         {
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
+                ExpireTimeSpan = TimeSpan.FromDays(30),
+            });
+
+            app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
+
+            app.UseTwoFactorSignInCookie(DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(5));
+
+            app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
+
             app.UseOAuthBearerTokens(new OAuthAuthorizationServerOptions()
             {
                 TokenEndpointPath = new PathString("/Token"),

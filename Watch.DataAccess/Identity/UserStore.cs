@@ -10,7 +10,7 @@ using System.Data.Entity;
 
 namespace Watch.DataAccess.Identity
 {
-    public class UserStore : IUserStore<User, int>, IUserPasswordStore<User, int>, IUserSecurityStampStore<User, int>, IUserRoleStore<User, int>
+    public class UserStore : IUserStore<User, int>, IUserPasswordStore<User, int>, IUserSecurityStampStore<User, int>, IUserRoleStore<User, int>, IUserLockoutStore<User, int> , IUserTwoFactorStore<User,int>
     {
         private readonly UserRepository userRepository;
         private readonly RoleRepository roleRepository;
@@ -149,6 +149,51 @@ namespace Watch.DataAccess.Identity
 
                 return false;
             });
+        }
+
+        public Task<DateTimeOffset> GetLockoutEndDateAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetLockoutEndDateAsync(User user, DateTimeOffset lockoutEnd)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> IncrementAccessFailedCountAsync(User user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public Task ResetAccessFailedCountAsync(User user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public Task<int> GetAccessFailedCountAsync(User user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public Task<bool> GetLockoutEnabledAsync(User user)
+        {
+            return Task.FromResult(false);
+        }
+
+        public Task SetLockoutEnabledAsync(User user, bool enabled)
+        {
+            return Task.FromResult(0);
+        }
+
+        public Task SetTwoFactorEnabledAsync(User user, bool enabled)
+        {
+            return Task.FromResult(0);
+        }
+
+        public Task<bool> GetTwoFactorEnabledAsync(User user)
+        {
+            return Task.FromResult(false);
         }
     }
 }

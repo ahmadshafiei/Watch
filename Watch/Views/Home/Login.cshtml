@@ -1,0 +1,42 @@
+﻿@inherits System.Web.Mvc.WebViewPage
+@{
+    Layout = "~/Views/Layout/View.cshtml";
+}
+<div class="page">
+    <div class="page-single">
+        <div class="container">
+            <div class="row">
+                <div class="col col-login mx-auto">
+                    <div class="text-center mb-6">
+                        <!--<img src="../assets/brand/tabler.svg" class="h-6" alt="">-->
+                        Watch24
+                    </div>
+                    <form class="card" action="/Home/Login" method="post" name="loginFrm" >
+                        <div class="card-body p-6">
+                            <div class="card-title">ورود به پنل مدیریت</div>
+                            <div class="form-group">
+                                <label class="form-label">نام کاربری</label>
+                                <input type="email" class="form-control" name="email" placeholder="ایمیل" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    کلمه ی عبور
+                                    <!--<a href="./forgot-password.html" class="float-right small">I forgot password</a>-->
+                                </label>
+                                <input type="password" class="form-control" name="password" placeholder="کلمه ی عبور" required>
+                            </div>
+                            <div class="form-footer">
+                                <button type="submit" class="btn btn-primary btn-block">ورود</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row">
+                        <div class="text-danger">
+                            @ViewBag.Error
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

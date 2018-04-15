@@ -1,7 +1,10 @@
 ﻿
 using Autofac;
+using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -13,6 +16,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using Watch.Business;
+using Watch.Controllers;
 using Watch.DataAccess;
 using Watch.DataAccess.Identity;
 using Watch.DataAccess.Repositories;
@@ -35,8 +39,9 @@ namespace Watch
 
         public void ConfigAutofac()
         {
+            #region [Web Api Resolver]
             var builder = new ContainerBuilder();
-            
+
             var config = GlobalConfiguration.Configuration;
 
             builder.RegisterType<AuthenticationBusiness>().InstancePerRequest();
@@ -48,8 +53,9 @@ namespace Watch
 
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().AsSelf().InstancePerRequest();
             builder.RegisterType<WatchContext>().As<DbContext>().AsSelf().InstancePerRequest();
-            builder.RegisterType<UserManager>().As<UserManager<User,int>>().AsSelf().InstancePerRequest();
+            builder.RegisterType<UserManager>().As<UserManager<User, int>>().AsSelf().InstancePerRequest();
             builder.RegisterType<UserStore>().As<IUserStore<User, int>>().AsSelf().InstancePerRequest();
+
 
             builder.RegisterType<UserRepository>().InstancePerRequest();
             builder.RegisterType<WatchRepository>().InstancePerRequest();
@@ -64,9 +70,31 @@ namespace Watch
             builder.RegisterType<StoreBookmarkRepository>().InstancePerRequest();
 
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+            builder.RegisterControllers(typeof(HomeController).Assembly);
 
             var container = builder.Build();
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
+            #endregion
+
+            #region [MVC Respolver]
+
+            var builderMvc = new ContainerBuilder();
+
+            builderMvc.RegisterControllers(typeof(HomeController).Assembly);
+
+            builderMvc.RegisterType<UserRoleRepository>().InstancePerRequest();
+            builderMvc.RegisterType<UserRepository>().InstancePerRequest();
+            builderMvc.RegisterType<RoleRepository>().InstancePerRequest();
+            builderMvc.RegisterType<UnitOfWork>().As<IUnitOfWork>().AsSelf().InstancePerRequest();
+            builderMvc.RegisterType<WatchContext>().As<DbContext>().AsSelf().InstancePerRequest();
+            builderMvc.RegisterType<UserStore>().As<IUserStore<User, int>>().AsSelf().InstancePerRequest();
+            builderMvc.RegisterType<UserManager>().As<UserManager<User, int>>().AsSelf().InstancePerRequest();
+            builderMvc.RegisterType<SignInManager<User, int>>().InstancePerRequest();
+
+            var containerMvc = builderMvc.Build();
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(containerMvc));
+            #endregion
+            
         }
     }
 }

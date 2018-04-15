@@ -16,7 +16,9 @@ namespace Watch.Models
         }
 
         public int Id { get; set; }
+        [Required]
         public string StoreName { get; set; }
+        [Required]
         public string Tell { get; set; }
         public string PhoneNumber { get; set; }
         public double Latitude { get; set; }
