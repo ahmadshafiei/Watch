@@ -1,6 +1,7 @@
 ﻿body {
     direction: rtl !important;
     text-align: right !important;
+    background-color:#EEE !important;
 }
 
 div.order-lg-first > ul.nav.nav-tabs {
@@ -12,7 +13,7 @@ div.order-lg-first > ul.nav.nav-tabs {
     src: url('../fonts/PersianFont/B Roya.ttf') format('truetype');
 }
 
-* {
+*:not(.fa) {
     font-family: 'B Roya' !important;
 }
 
@@ -24,10 +25,22 @@ div#chart-development-activity {
     padding: 20px !important;
 }
 
-#siteName{
-    font-family:Georgia !important;
+#siteName {
+    font-family: Georgia !important;
 }
 
-button[disabled="disabled"]{
-    cursor:not-allowed;
+button[disabled="disabled"] {
+    cursor: not-allowed;
+}
+
+.dropzone {
+    height:auto;
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+}
+
+.rounded{
+    width:100%;
+    height:300px;
 }

@@ -28,6 +28,7 @@ namespace Watch.Models
         [ForeignKey("User_Id")]
         public User User { get; set; }
         public List<StoreBookmark> StoreBookmarks { get; set; }
+
         #region [Get Watch Stores]
         [NotMapped]
         public bool IsBookmarked { get; set; }

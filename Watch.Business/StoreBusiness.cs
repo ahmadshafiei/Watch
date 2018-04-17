@@ -30,7 +30,7 @@ namespace Watch.Business
             unitOfWork.Commit();
         }
 
-        public List<Seller> GetAllStores(int? pageNumber, int? pageSize, string userName, out int count)
+        public List<Seller> GetAllBookmarkedStores(int? pageNumber, int? pageSize, string userName, out int count)
         {
             IQueryable<Seller> result = sellerRepository.Get().OrderByDescending(s => s.Id).Include(s => s.StoreBookmarks);
 
@@ -65,6 +65,19 @@ namespace Watch.Business
                 result = result.Skip((pageNumber.Value - 1) * 10).Take(10);
 
             return result.ToList().Select(u => new User { Id = u.Id, UserName = u.UserName }).ToList();
+        }
+
+        public List<Seller> GetAllStores(int? pageNumber, int? pageSize, string searchExp, out int count)
+        {
+            searchExp = searchExp ?? "";
+
+            return sellerRepository.GetAll(out count, s => s.StoreName.Contains(searchExp) || s.PhoneNumber.Contains(searchExp) || s.Tell.Contains(searchExp), (pageNumber - 1) * pageSize, pageSize, s => s.Id, null);
+        }
+
+        public void RemoveStore(int storeId)
+        {
+            sellerRepository.DeleteById(storeId);
+            unitOfWork.Commit();
         }
     }
 }

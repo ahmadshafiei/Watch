@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using Watch.Business;
 using Watch.DataAccess.Repositories;
@@ -20,7 +22,7 @@ namespace Watch.Api
         }
 
         [HttpGet]
-        public IResponse GetAllStores(int? pageNumber = null, int? pageSize = null)
+        public IResponse GetAllBookmarkedStores(int? pageNumber = null, int? pageSize = null)
         {
             PagedResult<Seller> result = new PagedResult<Seller>();
 
@@ -29,7 +31,7 @@ namespace Watch.Api
             if (User.Identity.IsAuthenticated)
                 userName = User.Identity.Name;
 
-            result.Data = storeBusiness.GetAllStores(pageNumber, pageSize, userName, out result.Count);
+            result.Data = storeBusiness.GetAllBookmarkedStores(pageNumber, pageSize, userName, out result.Count);
 
             return new Response<Seller>
             {
@@ -39,9 +41,37 @@ namespace Watch.Api
 
         #region [RegisterSeller-AdminPanel]
 
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public string Upload()
+        {
+            if (!Request.Content.IsMimeMultipartContent())
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            var files = HttpContext.Current.Request.Files;
+            byte[] buffer = new byte[files[0].ContentLength];
+            files[0].InputStream.Read(buffer, 0, buffer.Length);
+
+            Seller seller = new Seller();
+            MemoryStream ms = new MemoryStream(buffer);
+            var mainImg = System.Drawing.Image.FromStream(ms);
+
+            string relPath = "\\Images\\" + Guid.NewGuid().ToString() + ".jpg";
+            string path = "E:\\C#\\Watch24\\Watch\\Watch" + relPath;
+
+            mainImg.Save(path, mainImg.RawFormat);
+            seller.LogoPath = relPath;
+            return relPath;
+        }
+
         [Authorize(Roles = "Admin")]
         public IResponse RegisterSeller(Seller seller)
         {
+            if (seller.User_Id == 0)
+                return new Response<Seller>
+                {
+                    Success = false,
+                    Message = "کاربر مورد نظر را انتخاب کنید"
+                };
             storeBusiness.RegisterSeller(seller);
             return new Response<Seller>();
         }
@@ -55,6 +85,24 @@ namespace Watch.Api
             {
                 Result = result
             };
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IResponse GetAllStores(int? pageNumber, int? pageSize, string searchExp)
+        {
+            PagedResult<Seller> result = new PagedResult<Seller>();
+            result.Data = storeBusiness.GetAllStores(pageNumber, pageSize, searchExp, out result.Count);
+            return new Response<Seller>
+            {
+                Result = result
+            };
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public void RemoveStore(int storeId)
+        {
+            storeBusiness.RemoveStore(storeId);
         }
         #endregion
     }

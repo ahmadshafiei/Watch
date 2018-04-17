@@ -1,6 +1,6 @@
 ﻿var app = angular.module('watch');
 
-app.controller('registerSellerCtrl', function ($scope, NgMap, sellerService) {
+app.controller('registerSellerCtrl', function ($scope, NgMap, $http, sellerService, toaster) {
 
     //user Fetch
     var isFetching = false;
@@ -20,7 +20,8 @@ app.controller('registerSellerCtrl', function ($scope, NgMap, sellerService) {
         storeName: '',
         tell: '',
         phoneNumber: '',
-        userId: null,
+        logoPath: '',
+        user_Id: null,
         latitude: 35.6892,
         longitude: 51.3890,
     };
@@ -32,22 +33,7 @@ app.controller('registerSellerCtrl', function ($scope, NgMap, sellerService) {
     }
 
     $scope.registerSeller = function () {
-        console.log($scope.seller);
-        sellerService.registerSeller($scope.seller).then(function (response) {
-            $scope.result = {};
-            if (response.Success) {
-                $scope.result.type = 'success';
-                $scope.result.message = 'فروشگاه با موفقیت ایجاد شد';
-            }
-            else {
-                $scope.result.type = 'danger';
-                $scope.result.message = response.Message;
-            }
-        }, function (response) {
-            $scope.result = {};
-            $scope.result.type = 'danger';
-            $scope.result.message = response.data.ExceptionMessage;
-        });
+
     }
 
     $scope.getUsers = function (searchExp, pageNumber) {
@@ -71,5 +57,65 @@ app.controller('registerSellerCtrl', function ($scope, NgMap, sellerService) {
                 console.log(errorMessage);
                 isFetching = false;
             });
+    }
+
+    $scope.dzOptions = {
+        url: '/api/Store/Upload',
+        paramName: 'photo',
+        acceptedFiles: 'image/jpeg, images/jpg, image/png',
+        addRemoveLinks: true,
+        autoProcessQueue: false,
+        maxFiles: 1,
+        init: function () {
+            myDropzone = this;
+
+            $scope.registerSeller = function () {
+                $scope.disableAddBtn = true;
+                var check = myDropzone.getQueuedFiles().length;
+                myDropzone.processQueue();
+                if (check == 0) {
+                    add();
+                }
+            }
+
+            function add() {
+                $scope.seller.user_Id = $scope.selectedUser.Id;
+                $http({ method: 'POST', url: '/api/Store/RegisterSeller', data: JSON.stringify($scope.seller), headers: { 'Content-type': 'application/json' } })
+                    .then(function (response) {
+                        $scope.disableAddBtn = false;
+                        console.log(response);
+                        if (response.data.Success) {
+                            toaster.pop('info', 'فروشگاه با موفقیت ایجاد شد');
+                        }
+                        else {
+
+                            toaster.pop('error', 'خطا در برقراری ارتباط با سرور');
+                        }
+                    }, function () {
+                        $scope.disableAddBtn = false;
+                        toaster.pop('error', 'خطا در برقراری ارتباط با سرور');
+                    });
+            }
+
+            this.on("queuecomplete", function (file) {
+                add();
+            });
+        }
+
+    }
+
+    $scope.dzCallbacks = {
+        'addedfile': function (file) {
+            $scope.newFile = file;
+        },
+        'success': function (file, response) {
+            $scope.seller.logoPath = response;
+        },
+    };
+
+    $scope.dzMethods = {};
+
+    $scope.removeNewFile = function () {
+        $scope.dzMethods.removeFile($scope.newFile);
     }
 });

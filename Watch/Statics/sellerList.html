@@ -1,12 +1,56 @@
-﻿<div class="row row-cards">
+﻿<div class="row row-cards" ng-init="init()">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">لیست فروشگاه ها</h3>
-                <hr />
-                <div class="row">
-                    S
+                <h3 class="card-title" style="margin:8px !important;font-size:20px!important">لیست فروشگاه ها</h3>
+            </div>
+            <div style="padding:20px">
+                <div class="row" style="margin-bottom:20px">
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                        <div class="input-group" style="direction:ltr">
+                            <input class="form-control" ng-model="pagination.searchExp" ng-keypress="keySearch($event)" placeholder="جستجو" />
+                            <label class="input-group-addon" ng-click="search()" style="cursor:pointer;width:40px;margin:0"><i class="fa fa-search"></i></label>
+                        </div>
+                    </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-4" ng-repeat="store in stores">
+                        <div class="card p-3">
+                            <a href="javascript:void(0)" class="mb-3">
+                                <img src="{{store.LogoPath}}" alt="{{store.Name}}" class="rounded">
+                            </a>
+                            <div class="d-flex align-items-center px-2">
+                                <!--<div class="avatar avatar-md mr-3" style="background-image: url(demo/faces/male/41.jpg)"></div>-->
+                                <div>
+                                    <div>{{store.StoreName}}</div>
+                                    <small class="d-block text-muted">{{store.Tell}}</small>
+                                </div>
+                                <div class="ml-auto text-muted" style="position:absolute;left:10px">
+                                    <a ng-click="removeStore(store.Id)" class="text-danger" style="cursor:pointer"><i class="fe fe-trash"></i> حذف</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+            <div class="row">
+                <ul uib-pagination
+                    first-text="ابتدا"
+                    last-text="انتها"
+                    next-text="بعدی"
+                    previous-text="قبلی"
+                    ng-disabled="false"
+                    items-per-page="pagination.pageSize"
+                    total-items="pagination.count"
+                    boundary-links="true"
+                    max-size="pagination.maxSize"
+                    rotate="false"
+                    force-ellipses="true"
+                    ng-model="pagination.pageNumber"
+                    ng-change="pagination.pageChanged()"
+                    style="direction:ltr;margin:10px auto"></ul>
             </div>
         </div>
     </div>
