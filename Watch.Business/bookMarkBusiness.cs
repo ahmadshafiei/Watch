@@ -18,7 +18,7 @@ namespace Watch.Business
         private readonly StoreBookmarkRepository storeBookmarkRepository;
         private readonly UnitOfWork unitOfWork;
 
-        public BookMarkBusiness(WatchBookmarkRepository watchBookmarkRepository, StoreBookmarkRepository storeBookmarkRepository, WatchRepository watchRepository,SellerRepository sellerRepository, UnitOfWork unitOfWork)
+        public BookMarkBusiness(WatchBookmarkRepository watchBookmarkRepository, StoreBookmarkRepository storeBookmarkRepository, WatchRepository watchRepository, SellerRepository sellerRepository, UnitOfWork unitOfWork)
         {
             this.watchRepository = watchRepository;
             this.sellerRepository = sellerRepository;
@@ -26,11 +26,14 @@ namespace Watch.Business
             this.storeBookmarkRepository = storeBookmarkRepository;
             this.unitOfWork = unitOfWork;
         }
-        public void BookmarkWatch(int userId, int watchId)
+        public void BookmarkWatch(int userId, int watchId, bool bookmark)
         {
             if (!watchRepository.Get().Any(w => w.Id == watchId))
                 throw new NotFoundException("ساعت");
-            watchBookmarkRepository.Insert(new WatchBookmark { User_Id = userId, Watch_Id = watchId });
+            if (bookmark)
+                watchBookmarkRepository.Insert(new WatchBookmark { User_Id = userId, Watch_Id = watchId });
+            else
+                watchBookmarkRepository.Delete(new WatchBookmark { User_Id = userId, Watch_Id = watchId });
             unitOfWork.Commit();
         }
 
@@ -39,11 +42,14 @@ namespace Watch.Business
             return watchBookmarkRepository.Get().Where(wb => wb.User_Id == userId).Select(wb => wb.Watch_Id).ToList();
         }
 
-        public void BookmarkStore(int userId, int storeId)
+        public void BookmarkStore(int userId, int storeId, bool bookmark)
         {
             if (!sellerRepository.Get().Any(s => s.Id == storeId))
                 throw new NotFoundException("فروشگاه");
-            storeBookmarkRepository.Insert(new StoreBookmark { User_Id = userId, Seller_Id = storeId });
+            if (bookmark)
+                storeBookmarkRepository.Insert(new StoreBookmark { User_Id = userId, Seller_Id = storeId });
+            else
+                storeBookmarkRepository.Delete(new StoreBookmark { User_Id = userId, Seller_Id = storeId });
             unitOfWork.Commit();
         }
 

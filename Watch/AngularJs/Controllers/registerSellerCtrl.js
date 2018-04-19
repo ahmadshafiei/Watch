@@ -32,18 +32,13 @@ app.controller('registerSellerCtrl', function ($scope, NgMap, $http, sellerServi
         $scope.seller.longitude = ll.lng();
     }
 
-    $scope.registerSeller = function () {
-
-    }
-
     $scope.getUsers = function (searchExp, pageNumber) {
         if (isFetching) return;
-
+        Pace.start();
         isFetching = true;
 
         sellerService.getUsers(searchExp, pageNumber)
             .then(function (result) {
-                console.log(result);
                 if (pageNumber == 1) {
                     $scope.userCount = result.data.Result.Count;
                     $scope.users = result.data.Result.Data;
@@ -52,10 +47,11 @@ app.controller('registerSellerCtrl', function ($scope, NgMap, $http, sellerServi
                     $scope.users = $scope.users.concat(result.data.Result.Data);
                 }
                 isFetching = false;
+                Pace.stop();
             },
             function (errorMessage) {
-                console.log(errorMessage);
                 isFetching = false;
+                Pace.stop();
             });
     }
 
@@ -70,6 +66,7 @@ app.controller('registerSellerCtrl', function ($scope, NgMap, $http, sellerServi
             myDropzone = this;
 
             $scope.registerSeller = function () {
+                Pace.start();
                 $scope.disableAddBtn = true;
                 var check = myDropzone.getQueuedFiles().length;
                 myDropzone.processQueue();
@@ -83,7 +80,6 @@ app.controller('registerSellerCtrl', function ($scope, NgMap, $http, sellerServi
                 $http({ method: 'POST', url: '/api/Store/RegisterSeller', data: JSON.stringify($scope.seller), headers: { 'Content-type': 'application/json' } })
                     .then(function (response) {
                         $scope.disableAddBtn = false;
-                        console.log(response);
                         if (response.data.Success) {
                             toaster.pop('info', 'فروشگاه با موفقیت ایجاد شد');
                         }
@@ -91,7 +87,9 @@ app.controller('registerSellerCtrl', function ($scope, NgMap, $http, sellerServi
 
                             toaster.pop('error', 'خطا در برقراری ارتباط با سرور');
                         }
+                        Pace.stop();
                     }, function () {
+                        Pace.stop();
                         $scope.disableAddBtn = false;
                         toaster.pop('error', 'خطا در برقراری ارتباط با سرور');
                     });

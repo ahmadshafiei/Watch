@@ -150,6 +150,29 @@ namespace Watch.Business
 
         }
 
+        public List<Models.Watch> GetStoreBestWatches(int storeId, int? pageNumber, int? pageSize, out int count)
+        {
+            Seller seller = sellerRepository.GetById(storeId);
+
+            if (seller == null)
+                throw new NotFoundException("فروشگاه");
+
+            int userId = seller.User_Id;
+
+            IQueryable<Models.Watch> result = watchRepository.Get().Where(w => w.OwnerUser_Id == userId).Include(w => w.WatchBookmarks).OrderByDescending(w => w.WatchBookmarks.Count);
+
+            count = result.Count();
+
+            if (pageNumber.HasValue && pageSize.HasValue)
+                result = result.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
+            else
+                result = result.OrderBy(w => Guid.NewGuid()).Take(10); //Transpose records
+
+            return result.ToList();
+
+
+        }
+
         public List<Models.Watch> GetBrandButique(int? pageNumber, int? pageSize, int brandId, out int count)
         {
             Brand brand = brandRepository.GetById(brandId);
@@ -168,7 +191,7 @@ namespace Watch.Business
 
             foreach (var item in result) //Prevent self referencing loop
                 item.Brand.Watches = null;
-            
+
 
             return result.ToList();
         }
@@ -261,9 +284,21 @@ namespace Watch.Business
             result.SimilarWatches.AddRange(watchRepository.Get().OrderBy(w => Math.Abs(w.Price - result.Price)).Take(3).ToList());
             result.SimilarWatches.AddRange(watchRepository.Get().Where(w => w.Brand_Id == result.Brand_Id).Take(3).ToList());
 
+            result.OwnerUser.Password = null;
+            result.OwnerUser.SecurityStamp = null;
+
             //Prevent self looping
-            result.Brand.Watches = null;
-            result.OwnerUser.Watches = null;
+            //if (result.Brand != null)
+            //    result.Brand.Watches = null;
+            //result.OwnerUser.Watches = null;
+            //result.WatchBookmarks.ForEach(wb =>
+            //{
+            //    wb.Watch = null;
+            //});
+            //result.SimilarWatches.ForEach(sw =>
+            //{
+            //    sw.SimilarWatches = null;
+            //});
 
             return result;
         }
@@ -444,7 +479,7 @@ namespace Watch.Business
                     PhoneNumber = phoneNumber,
                     User_Id = userId,
                     Type = AddressType.UserAddress
-                    
+
                 });
 
             userRepository.Update(user);

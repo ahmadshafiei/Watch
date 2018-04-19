@@ -165,6 +165,28 @@ namespace Watch.Api
         }
 
         [HttpGet]
+        public IResponse GetStoreBestWatches(int storeId , int? pageNumber = null , int? pageSize = null)
+        {
+            try
+            {
+                PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
+                result.Data = watchBusiness.GetStoreBestWatches(storeId, pageNumber, pageSize, out result.Count);
+                return new Response<Models.Watch>
+                {
+                    Result = result
+                };
+            }
+            catch (Exception e)
+            {
+                return new Response<Models.Watch>
+                {
+                    Success = false,
+                    Message = e.Message
+                };
+            }
+        }
+
+        [HttpGet]
         public IResponse GetLatestWatches(int[] brands, int? pageNumber = null, int? pageSize = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();

@@ -71,7 +71,7 @@ namespace Watch.Business
         {
             searchExp = searchExp ?? "";
 
-            return sellerRepository.GetAll(out count, s => s.StoreName.Contains(searchExp) || s.PhoneNumber.Contains(searchExp) || s.Tell.Contains(searchExp), (pageNumber - 1) * pageSize, pageSize, s => s.Id, null);
+            return sellerRepository.GetAll(out count, s => s.StoreName.Contains(searchExp) || s.PhoneNumber.Contains(searchExp) || s.Tell.Contains(searchExp), (pageNumber - 1) * pageSize, pageSize, s => s.Id, s => s.User);
         }
 
         public void RemoveStore(int storeId)

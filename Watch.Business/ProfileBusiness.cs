@@ -99,6 +99,12 @@ namespace Watch.Business
             else
                 result = result.OrderBy(sp => Guid.NewGuid()).Take(10);
 
+            foreach (SuggestPrice sp in result)
+            {
+                sp.User.Password = null;
+                sp.User.SecurityStamp = null;
+            }
+
             return result.ToList();
         }
     }

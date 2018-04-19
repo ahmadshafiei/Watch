@@ -1,6 +1,6 @@
 ﻿var app = angular.module('watch');
 
-app.controller('sellerListCtrl', function ($scope, sellerService, ngDialog, toaster) {
+app.controller('sellerListCtrl', function ($scope, sellerService, ngDialog, toaster, NgMap) {
 
     $scope.result = {
         success: null,
@@ -8,7 +8,7 @@ app.controller('sellerListCtrl', function ($scope, sellerService, ngDialog, toas
     }
 
     $scope.pagination = {
-        pageSize: 10,
+        pageSize: 6,
         maxSize: 5,
         pageNumber: 1,
         count: null,
@@ -58,16 +58,36 @@ app.controller('sellerListCtrl', function ($scope, sellerService, ngDialog, toas
         });
     }
 
-
+    $scope.showLocationOnMap = function (lat, lng) {
+        $scope.storeLatitude = lat;
+        $scope.storeLongitude = lng;
+        ngDialog.open({
+            template: '/Statics/storeLocationOnMap.html',
+            className: 'ngdialog-theme-default',
+            width: '800px',
+            height: '500px',
+            scope: $scope,
+            showClose: true,
+            controller: ['NgMap', function (NgMap) {
+                NgMap.getMap().then(function (map) {
+                    $scope.map = map;
+                    map.setZoom(13);
+                });
+            }]
+        });
+    }
 
     function getAllStores() {
+        Pace.start();
         $scope.pagination.loading = true;
         sellerService.getAllStores($scope.pagination.pageNumber, $scope.pagination.pageSize, $scope.pagination.searchExp).then(function (response) {
             $scope.stores = response.data.Result.Data;
             $scope.pagination.count = response.data.Result.Count;
             $scope.pagination.loading = true;
+            Pace.stop();
         }, function (response) {
             $scope.pagination.loading = true;
+            Pace.stop();
         });
     }
 

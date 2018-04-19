@@ -56,7 +56,8 @@ namespace Watch.Api
             var mainImg = System.Drawing.Image.FromStream(ms);
 
             string relPath = "\\Images\\" + Guid.NewGuid().ToString() + ".jpg";
-            string path = "E:\\C#\\Watch24\\Watch\\Watch" + relPath;
+            string path = "C:\\inetpub\\wwwroot" + relPath;
+            //publish: C:\\inetpub\\wwwroot
 
             mainImg.Save(path, mainImg.RawFormat);
             seller.LogoPath = relPath;

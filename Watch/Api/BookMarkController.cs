@@ -23,13 +23,13 @@ namespace Watch.Api
 
         [Authorize(Roles = "User")]
         [HttpGet]
-        public IResponse BookmarkWatch(int watchId)
+        public IResponse BookmarkWatch(int watchId, bool bookmark)
         {
             try
             {
                 int userId = userRepository.Get().Where(u => u.UserName == User.Identity.Name).Single().Id;
 
-                bookMarkBusiness.BookmarkWatch(userId, watchId);
+                bookMarkBusiness.BookmarkWatch(userId, watchId, bookmark);
 
                 return new Response<WatchBookmark>();
             }
@@ -62,13 +62,13 @@ namespace Watch.Api
 
         [Authorize(Roles = "User")]
         [HttpGet]
-        public IResponse BookmarkStore(int storeId)
+        public IResponse BookmarkStore(int storeId, bool bookmark)
         {
             try
             {
                 int userId = userRepository.Get().Where(u => u.UserName == User.Identity.Name).Single().Id;
 
-                bookMarkBusiness.BookmarkStore(userId, storeId);
+                bookMarkBusiness.BookmarkStore(userId, storeId, bookmark);
 
                 return new Response<StoreBookmark>();
             }

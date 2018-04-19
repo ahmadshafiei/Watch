@@ -4,11 +4,9 @@
         <span class="pull-right fe" ng:class="{true:'fe-chevron-up', false:'fe-chevron-down'}[showList]"></span>
     </div>
     <div class="search">
-        <div class="input-group">
-            <input type="text" ng-model="searchKey" class="form-control" placeholder="حداقل 3 کارکتر برای جستجو وارد کنید ..." ng-change="textChanged(searchKey)">
-            <span class="input-group-btn">
-                <button class="btn btn-default" type="button"><i class="fe fe-search"></i></button>
-            </span>
+        <div class="input-group" style="direction:ltr">
+            <input type="text" class="form-control" ng-model="searchKey" placeholder="حداقل 3 کارکتر برای جستجو وارد کنید ..." ng-change="textChanged(searchKey)" />
+            <button class="input-group-addon" type="button" style="width:auto"><i class="fe fe-search"></i></button>
         </div>
         <div class="text-right nomargin nopadding" ng-if="userCount!=0"><small>نمایش {{values.length}} کاربر از {{totalrecords}} کاربر.</small></div>
     </div>

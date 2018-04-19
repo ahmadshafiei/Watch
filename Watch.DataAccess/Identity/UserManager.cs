@@ -31,8 +31,8 @@ namespace Watch.DataAccess.Identity
             return Task.Run(() =>
             {
                 var passwordHasher = new PasswordHasher();
-                var user = Store.FindByNameAsync(userName).Result;
-                if (passwordHasher.VerifyHashedPassword(user.Password, password) == PasswordVerificationResult.Failed)
+                var user = Store.FindByNameAsync(userName)?.Result;
+                if (passwordHasher.VerifyHashedPassword(user?.Password, password) == PasswordVerificationResult.Failed)
                     return null;
                 return user;
             });
