@@ -284,8 +284,8 @@ namespace Watch.Business
             result.SimilarWatches.AddRange(watchRepository.Get().OrderBy(w => Math.Abs(w.Price - result.Price)).Take(3).ToList());
             result.SimilarWatches.AddRange(watchRepository.Get().Where(w => w.Brand_Id == result.Brand_Id).Take(3).ToList());
 
-            result.OwnerUser.Password = null;
-            result.OwnerUser.SecurityStamp = null;
+            //result.OwnerUser.Password = null;
+            //result.OwnerUser.SecurityStamp = null;
 
             //Prevent self looping
             //if (result.Brand != null)
@@ -377,7 +377,7 @@ namespace Watch.Business
             return seller;
         }
 
-        public List<Models.Watch> SearchWatch(string searchExp, int? pageNumber, int? pageSize, int? brandId, Movement? movement, decimal? minPrice, decimal? maxPrice, Condition? condition, out int count)
+        public List<Models.Watch> SearchWatch(string searchExp, int? pageNumber, int? pageSize, int? brandId, Movement? movement, decimal? minPrice, decimal? maxPrice, Condition? condition, Models.Gender? gender, out int count)
         {
             searchExp = searchExp ?? "";
 
@@ -400,6 +400,8 @@ namespace Watch.Business
                 result = result.Where(r => r.Price <= maxPrice);
             if (condition.HasValue)
                 result = result.Where(r => r.Condition == condition);
+            if (gender.HasValue)
+                result = result.Where(r => r.Gender == gender);
 
             count = result.Count();
 

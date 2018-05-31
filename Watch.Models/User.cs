@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Watch.Models
 {
+    [JsonObject]
     public class User : IUser<int>
     {
         public User()
@@ -15,12 +17,14 @@ namespace Watch.Models
         }
         public int Id { get; set; }
         public string UserName { get; set; }
+        [JsonIgnore]
         public string Password { get; set; }
         public string Name { get; set; }
         public string Family { get; set; }
         public string PhoneNumber { get; set; }
         public string NationalCode { get; set; }
         public Gender? Gender { get; set; }
+        [JsonIgnore]
         public string SecurityStamp { get; set; }
         public List<Address> Addresses { get; set; }
         public List<UserRole> UserRoles { get; set; }

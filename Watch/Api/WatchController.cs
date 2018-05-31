@@ -335,11 +335,11 @@ namespace Watch.Api
         }
 
         [HttpGet]
-        public IResponse WatchSearch(string searchExp, int? pageNumber = null, int? pageSize = null, int? brandId = null, Movement? movement = null, decimal? minPrice = null, decimal? maxPrice = null, Condition? condition = null)
+        public IResponse WatchSearch(string searchExp, int? pageNumber = null, int? pageSize = null, int? brandId = null, Movement? movement = null, decimal? minPrice = null, decimal? maxPrice = null, Condition? condition = null , Models.Gender? gender = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
 
-            result.Data = watchBusiness.SearchWatch(searchExp, pageNumber, pageSize, brandId, movement, minPrice, maxPrice, condition, out result.Count);
+            result.Data = watchBusiness.SearchWatch(searchExp, pageNumber, pageSize, brandId, movement, minPrice, maxPrice, condition,gender, out result.Count);
 
             return new Response<Models.Watch>
             {

@@ -30,6 +30,8 @@ namespace Watch.Business
         {
             if (!watchRepository.Get().Any(w => w.Id == watchId))
                 throw new NotFoundException("ساعت");
+            if (watchBookmarkRepository.Get().Any(wb => wb.User_Id == userId && wb.Watch_Id == watchId))
+                return;
             if (bookmark)
                 watchBookmarkRepository.Insert(new WatchBookmark { User_Id = userId, Watch_Id = watchId });
             else
@@ -46,6 +48,8 @@ namespace Watch.Business
         {
             if (!sellerRepository.Get().Any(s => s.Id == storeId))
                 throw new NotFoundException("فروشگاه");
+            if (storeBookmarkRepository.Get().Any(sb => sb.User_Id == userId && sb.Seller_Id == storeId))
+                return;
             if (bookmark)
                 storeBookmarkRepository.Insert(new StoreBookmark { User_Id = userId, Seller_Id = storeId });
             else

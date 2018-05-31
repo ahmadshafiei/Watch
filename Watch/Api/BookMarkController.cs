@@ -31,7 +31,11 @@ namespace Watch.Api
 
                 bookMarkBusiness.BookmarkWatch(userId, watchId, bookmark);
 
-                return new Response<WatchBookmark>();
+                return new Response<WatchBookmark>
+                {
+                    Success = true,
+                    Message = "Watch Bookmarked"
+                };
             }
             catch (Exception e)
             {
@@ -70,7 +74,11 @@ namespace Watch.Api
 
                 bookMarkBusiness.BookmarkStore(userId, storeId, bookmark);
 
-                return new Response<StoreBookmark>();
+                return new Response<StoreBookmark>()
+                {
+                    Success = true,
+                    Message = "Store Bookmarked"
+                };
             }
             catch (Exception e)
             {

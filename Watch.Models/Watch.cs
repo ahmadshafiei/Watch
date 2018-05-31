@@ -22,6 +22,7 @@ namespace Watch.Models
         public decimal Price { get; set; }
         public bool IsAvailable { get; set; }
         public bool IsHeader { get; set; }
+        public bool IsBoxed { get; set; }
         //Determines if user can suggest price on this particular watch
         public bool SuggestPrice { get; set; }
         public string Name { get; set; }
