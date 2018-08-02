@@ -16,8 +16,9 @@ namespace Watch.Business.Utility
             MemoryStream ms = new MemoryStream(image);
             var mainImg = System.Drawing.Image.FromStream(ms);
 
-            string relPath = "Images/" + Guid.NewGuid().ToString() + ".jpg";
-            string absPath = "c:/inetpub/wwwroot" + relPath;
+
+            string relPath = "\\Images\\" + Guid.NewGuid().ToString() + ".jpg";
+            string absPath = "C:\\inetpub\\wwwroot" + relPath;
 
             mainImg.Save(absPath, mainImg.RawFormat);
 

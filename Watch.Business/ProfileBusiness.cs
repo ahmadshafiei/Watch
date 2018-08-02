@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Watch.Business.Exceptions;
 using Watch.DataAccess.Identity;
 using Watch.DataAccess.Repositories;
+using Watch.DataAccess.UnitOfWork;
 using Watch.Models;
 
 namespace Watch.Business
@@ -17,13 +19,15 @@ namespace Watch.Business
         private readonly SellerRepository sellerRepository;
         private readonly SuggestPriceRepository suggestPriceRepository;
         private readonly UserManager userManager;
+        private readonly UnitOfWork unitOfWork;
 
-        public ProfileBusiness(UserManager userManager, UserRepository userRepository, SellerRepository sellerRepository, SuggestPriceRepository suggestPriceRepository)
+        public ProfileBusiness(UserManager userManager, UserRepository userRepository, SellerRepository sellerRepository, SuggestPriceRepository suggestPriceRepository, UnitOfWork unitOfWork)
         {
             this.userRepository = userRepository;
             this.userManager = userManager;
             this.sellerRepository = sellerRepository;
             this.suggestPriceRepository = suggestPriceRepository;
+            this.unitOfWork = unitOfWork;
         }
 
         //public User GetUserProfileInfo(int userId)
@@ -44,6 +48,7 @@ namespace Watch.Business
         public dynamic GetProfileInfo(int userId, bool isSeller)
         {
             User user = userRepository.Get()
+                .Include(u => u.UserRoles.Select(ur => ur.Role))
                 .Include(u => u.BookmarkedStores)
                 .Include(u => u.BookmarkedWatches)
                 .Include(u => u.Requests)
@@ -55,7 +60,7 @@ namespace Watch.Business
 
             if (isSeller)
             {
-                Seller seller = sellerRepository.Get()
+                Seller seller = sellerRepository.Get().Include(s => s.User.UserRoles.Select(ur => ur.Role))
                 .FirstOrDefault(s => s.User_Id == user.Id);
 
                 if (seller == null)
@@ -106,6 +111,38 @@ namespace Watch.Business
             }
 
             return result.ToList();
+        }
+
+        public async Task<User> EditUserProfile(User user, string username)
+        {
+            User mainUser = await userManager.FindByNameAsync(username);
+
+            foreach (var property in mainUser.GetType().GetProperties())
+                if (property.GetValue(mainUser) != null)
+                    property.SetValue(user, property.GetValue(mainUser));
+
+            userRepository.dbContext.Entry(mainUser).CurrentValues.SetValues(user);
+            unitOfWork.Commit();
+
+            return userRepository.GetById(user.Id);
+        }
+
+        public async Task<Seller> EditSellerProfile(Seller seller, string username)
+        {
+            User user = await userManager.FindByNameAsync(username);
+
+            if (user == null)
+                throw new NotFoundException("کاربر");
+
+            Seller mainSeller = sellerRepository.Get().Where(s => s.User_Id == user.Id).SingleOrDefault();
+
+            foreach (var property in mainSeller.GetType().GetProperties())
+                if (property.GetValue(mainSeller) != null)
+                    property.SetValue(seller, property.GetValue(mainSeller));
+
+            sellerRepository.dbContext.Entry(mainSeller).CurrentValues.SetValues(seller);
+            unitOfWork.Commit();
+            return sellerRepository.GetById(seller.Id);
         }
     }
 }

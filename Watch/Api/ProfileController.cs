@@ -100,5 +100,33 @@ namespace Watch.Api
                 };
             }
         }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IResponse> EditSellerProfile(Seller seller)
+        {
+            return new Response<Seller>
+            {
+                Result = new PagedResult<Seller>
+                {
+                    Data = new List<Seller> { await profileBusiness.EditSellerProfile(seller, User.Identity.Name) },
+                    Count = 1,
+                }
+            };
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IResponse> EditUserProfile(User user)
+        {
+            return new Response<User>
+            {
+                Result = new PagedResult<User>
+                {
+                    Data = new List<User> { await profileBusiness.EditUserProfile(user, User.Identity.Name) },
+                    Count = 1,
+                }
+            };
+        }
     }
 }

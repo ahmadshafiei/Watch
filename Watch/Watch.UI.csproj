@@ -208,6 +208,7 @@
     <Compile Include="Api\BookMarkController.cs" />
     <Compile Include="Api\ProfileController.cs" />
     <Compile Include="Api\RequestController.cs" />
+    <Compile Include="Api\RoleController.cs" />
     <Compile Include="Api\StoreController.cs" />
     <Compile Include="Api\WatchController.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -220,6 +221,8 @@
     <Compile Include="Models\IResponse.cs" />
     <Compile Include="Models\PagedResult.cs" />
     <Compile Include="Models\Response.cs" />
+    <Compile Include="Models\UserViewModel.cs" />
+    <Compile Include="Models\WatchSummaryViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\MD5Encrypter.cs" />
@@ -604,7 +607,9 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Watch\Models\" />
+  </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
   </ItemGroup>

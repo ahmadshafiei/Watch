@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using System.Web.Security;
 using Watch.Business;
 using Watch.DataAccess.Repositories;
 using Watch.Models;
@@ -64,7 +65,7 @@ namespace Watch.Api
             return relPath;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Seller")]
         public IResponse RegisterSeller(Seller seller)
         {
             if (seller.User_Id == 0)
@@ -88,7 +89,6 @@ namespace Watch.Api
             };
         }
 
-        [Authorize(Roles = "Admin")]
         public IResponse GetAllStores(int? pageNumber, int? pageSize, string searchExp)
         {
             PagedResult<Seller> result = new PagedResult<Seller>();
@@ -105,6 +105,49 @@ namespace Watch.Api
         {
             storeBusiness.RemoveStore(storeId);
         }
+
+        #endregion
+
+        #region [Store Images CRUD]
+        [Authorize(Roles = "Seller")]
+        [HttpGet]
+        public IResponse GetAllStoreImages()
+        {
+            PagedResult<Image> result = new PagedResult<Image>();
+            result.Data = storeBusiness.GetAllStoreImages(User.Identity.Name);
+            return new Response<Image>
+            {
+                Result = result
+            };
+        }
+
+        [Authorize(Roles = "Seller")]
+        [HttpPost]
+        public IResponse AddImages(List<byte[]> images)
+        {
+            int count;
+            if (!storeBusiness.AddImages(images, User.Identity.Name, out count))
+                return new Response<Image>()
+                {
+                    Success = false,
+                    Message = "بیشتر از 3 عکس نمی توانید آپلود کنید تعداد عکس باقی مانده " + count
+                };
+            return new Response<Image>();
+        }
+
+        [Authorize(Roles = "Seller")]
+        [HttpGet]
+        public IResponse RemoveImage(int imageId)
+        {
+            if (storeBusiness.RemoveImage(imageId, User.Identity.Name))
+                return new Response<Image>();
+            return new Response<Image>
+            {
+                Success = false,
+                Message = "عکس مورد نظر مربوط به فروشگاه شما نمی باشد"
+            };
+        }
+
         #endregion
     }
 }

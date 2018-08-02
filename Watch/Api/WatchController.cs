@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using Watch.Business;
 using Watch.DataAccess.Identity;
@@ -76,6 +77,17 @@ namespace Watch.Api
             {
                 return new Response<Models.Watch>() { Success = false, Message = e.Message, Result = null };
             }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IResponse GetUserWatches(int? pageNumber = null, int? pageSize = null, string searchExp = null)
+        {
+            Response<Models.Watch> response = new Response<Models.Watch>();
+
+            response.Result.Data = watchBusiness.GetUserWatches(pageNumber, pageSize, searchExp, User.Identity.Name, out response.Result.Count);
+
+            return response;
         }
 
         [HttpGet]
@@ -165,7 +177,7 @@ namespace Watch.Api
         }
 
         [HttpGet]
-        public IResponse GetStoreBestWatches(int storeId , int? pageNumber = null , int? pageSize = null)
+        public IResponse GetStoreBestWatches(int storeId, int? pageNumber = null, int? pageSize = null)
         {
             try
             {
@@ -267,6 +279,38 @@ namespace Watch.Api
         }
 
         [HttpGet]
+        public IResponse GetWatchSummary(int watchId)
+        {
+            try
+            {
+                string username = String.Empty;
+                if (User.Identity.IsAuthenticated)
+                    username = User.Identity.Name;
+
+                Models.Watch watch = watchBusiness.GetWatchDetail(watchId, username);
+                return new Response<WatchSummaryViewModel>
+                {
+                    Result = new PagedResult<WatchSummaryViewModel>
+                    {
+                        Count = 1,
+                        Data = new List<WatchSummaryViewModel>
+                        {
+                            (WatchSummaryViewModel)watch,
+                        }
+                    }
+                };
+            }
+            catch (Exception e)
+            {
+                return new Response<WatchSummaryViewModel>
+                {
+                    Success = false,
+                    Message = e.Message,
+                };
+            }
+        }
+
+        [HttpGet]
         public IResponse GetSellerWatches(int sellerId, int? pageNumber = null, int? pageSize = null)
         {
             try
@@ -335,11 +379,11 @@ namespace Watch.Api
         }
 
         [HttpGet]
-        public IResponse WatchSearch(string searchExp, int? pageNumber = null, int? pageSize = null, int? brandId = null, Movement? movement = null, decimal? minPrice = null, decimal? maxPrice = null, Condition? condition = null , Models.Gender? gender = null)
+        public IResponse WatchSearch(string searchExp, int? pageNumber = null, int? pageSize = null, int? brandId = null, Movement? movement = null, decimal? minPrice = null, decimal? maxPrice = null, Condition? condition = null, Models.Gender? gender = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
 
-            result.Data = watchBusiness.SearchWatch(searchExp, pageNumber, pageSize, brandId, movement, minPrice, maxPrice, condition,gender, out result.Count);
+            result.Data = watchBusiness.SearchWatch(searchExp, pageNumber, pageSize, brandId, movement, minPrice, maxPrice, condition, gender, out result.Count);
 
             return new Response<Models.Watch>
             {
@@ -361,6 +405,7 @@ namespace Watch.Api
         }
 
         [HttpGet]
+
         public IResponse GetSellerByUserId(int userId)
         {
             try
@@ -386,6 +431,30 @@ namespace Watch.Api
                     Message = e.Message,
                 };
             }
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "User")]
+        public IResponse GetPurchaseHistory(int? pageNumber = null, int? pageSize = null)
+        {
+            PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
+            result.Data = watchBusiness.GetPurchaseHistory(pageNumber, pageSize,User.Identity.Name, out result.Count);
+            return new Response<Models.Watch>
+            {
+                Result = result
+            };
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "User,Seller")]
+        public IResponse GetSoldItemHistory(int? pageNumber = null, int? pageSize = null)
+        {
+            PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
+            result.Data = watchBusiness.GetSoldItemHistory(pageNumber, pageSize, User.Identity.Name, out result.Count);
+            return new Response<Models.Watch>
+            {
+                Result = result
+            };
         }
 
         #endregion

@@ -45,7 +45,7 @@ namespace Watch.DataAccess.Repositories
             return result.ToList();
         }
 
-        public List<T> GetAll(out int count, Expression<Func<T, bool>> where, int? skip, int? take, Expression<Func<T, int>> orderBy, Expression<Func<T, object>> include)
+        public IQueryable<T> GetAll(out int count, Expression<Func<T, bool>> where, int? skip, int? take, Expression<Func<T, int>> orderBy, Expression<Func<T, object>> include)
         {
             IQueryable<T> result = dbSet;
 
@@ -65,7 +65,7 @@ namespace Watch.DataAccess.Repositories
             if (include != null)
                 result = result.Include(include);
 
-            return result.ToList();
+            return result;
         }
 
         public T GetById(int Id)

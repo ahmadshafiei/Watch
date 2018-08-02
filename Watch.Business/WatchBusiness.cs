@@ -71,15 +71,42 @@ namespace Watch.Business
             unitOfWork.Commit();
         }
 
+        public List<Models.Watch> GetUserWatches(int? pageNumber, int? pageSize, string searchExp, string username, out int count)
+        {
+            User user = userRepository.Get().Where(u => u.UserName == username).SingleOrDefault();
+
+            if (user == null)
+                throw new NotFoundException("کاربر");
+
+            IQueryable<Models.Watch> result = watchRepository.Get();
+
+            if (pageNumber.HasValue && pageSize.HasValue)
+                result = watchRepository.GetAll(out count, w => w.OwnerUser_Id == user.Id, (pageNumber.Value - 1) * pageSize.Value, pageSize.Value, w => w.Id, w => w.OwnerUser).Include(w => w.Images).Include(w => w.WatchBookmarks).Include(w => w.SuggestedPrices);
+            else
+                result = watchRepository.GetAll(out count, w => w.OwnerUser_Id == user.Id, null, null, w => w.Id, null).Include(w => w.Images).Include(w => w.WatchBookmarks).Include(w => w.SuggestedPrices).Include(w => w.OwnerUser);
+
+            List<Models.Watch> watches = result.ToList();
+
+            foreach (var watch in watches)
+            {
+                watch.SimilarWatches = new List<Models.Watch>();
+                watch.SimilarWatches.AddRange(watchRepository.Get().Include(w => w.Images).OrderBy(w => Math.Abs(w.Price - watch.Price)).Take(3).ToList());
+                watch.SimilarWatches.AddRange(watchRepository.Get().Include(w => w.Images).Where(w => w.Brand_Id == watch.Brand_Id).Take(3).ToList());
+            }
+
+
+            return watches;
+        }
+
         public List<Models.Watch> GetAllWatches(string searchExp, int? skip, int? take, out int count)
         {
-            return watchRepository.GetAll(out count, null, skip, take, w => w.Id, w => w.Images);
+            return watchRepository.GetAll(out count, null, skip, take, w => w.Id, w => w.Images).ToList();
         }
 
         public List<Models.Watch> GetAllHeaderWatches()
         {
             int count = 0;
-            return watchRepository.GetAll(out count, w => w.IsHeader, null, null, w => w.Id, w => w.Images);
+            return watchRepository.GetAll(out count, w => w.IsHeader, null, null, w => w.Id, w => w.Images).ToList();
         }
 
         #endregion
@@ -87,7 +114,7 @@ namespace Watch.Business
         #region [Watch , Brand]
         public List<Models.Watch> GetBestProducts(int? pageNumber, int? pageSize, int[] brands, out int count)
         {
-            IQueryable<Models.Watch> result = watchRepository.Get();
+            IQueryable<Models.Watch> result = watchRepository.Get().Include(w => w.Images);
 
             if (brands != null)
                 result = result.Where(w => w.Brand_Id.HasValue ? brands.ToList().Contains(w.Brand_Id.Value) : false);
@@ -198,7 +225,7 @@ namespace Watch.Business
 
         public List<Models.Watch> GetLatestProducts(int? pageNumber, int? pageSize, int[] brands, out int count)
         {
-            IQueryable<Models.Watch> result = watchRepository.Get();
+            IQueryable<Models.Watch> result = watchRepository.Get().Include(w => w.Images);
 
             if (brands != null)
                 result = result.Where(w => w.Brand_Id.HasValue ? brands.Contains(w.Brand_Id.Value) : false);
@@ -217,7 +244,7 @@ namespace Watch.Business
 
         public List<Models.Watch> GetTopSellWatches(int? pageNumber, int? pageSize, int[] brands, out int count)
         {
-            IQueryable<Models.Watch> result = watchRepository.Get();
+            IQueryable<Models.Watch> result = watchRepository.Get().Include(w => w.Images);
 
             if (brands != null)
                 result = result.Where(w => w.Brand_Id.HasValue ? brands.Contains(w.Brand_Id.Value) : false);
@@ -268,8 +295,11 @@ namespace Watch.Business
                 .Include(w => w.WatchBookmarks)
                 .Include(w => w.Brand)
                 .Include(w => w.Images)
-                .Include(w => w.OwnerUser)
+                .Include(w => w.OwnerUser.Addresses)
                 .FirstOrDefault();
+
+            if (result.OwnerUser_Id.HasValue)
+                result.OwnerUser.Store = sellerRepository.GetById(result.OwnerUser_Id.Value);
 
             if (result == null)
                 throw new NotFoundException("ساعت");
@@ -281,8 +311,8 @@ namespace Watch.Business
             }
 
             result.SimilarWatches = new List<Models.Watch>();
-            result.SimilarWatches.AddRange(watchRepository.Get().OrderBy(w => Math.Abs(w.Price - result.Price)).Take(3).ToList());
-            result.SimilarWatches.AddRange(watchRepository.Get().Where(w => w.Brand_Id == result.Brand_Id).Take(3).ToList());
+            result.SimilarWatches.AddRange(watchRepository.Get().Include(w => w.Images).OrderBy(w => Math.Abs(w.Price - result.Price)).Take(3).ToList());
+            result.SimilarWatches.AddRange(watchRepository.Get().Include(w => w.Images).Where(w => w.Brand_Id == result.Brand_Id).Take(3).ToList());
 
             //result.OwnerUser.Password = null;
             //result.OwnerUser.SecurityStamp = null;
@@ -365,6 +395,55 @@ namespace Watch.Business
             watchRepository.Update(watch);
 
             unitOfWork.Commit();
+        }
+
+        public List<Models.Watch> GetSoldItemHistory(int? pageNumber, int? pageSize, string username, out int count)
+        {
+            User user = userRepository.Get().Where(u => u.UserName == username).SingleOrDefault();
+
+            if (user == null)
+                throw new NotFoundException("کاربر");
+
+            IQueryable<Models.Watch> result = watchRepository.Get()
+                .Where(w => w.OwnerUser_Id == user.Id && w.Requests.Any())
+                .Include(w => w.Requests)
+                .Include(w => w.OwnerUser)
+                .Include(w => w.Images)
+                .Include(w => w.Brand)
+                .Include(w => w.Requests)
+                .OrderByDescending(w => w.DateCreated);
+
+            count = result.Count();
+
+            if (pageSize.HasValue && pageNumber.HasValue)
+                result = result.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
+
+            return result.ToList();
+
+        }
+
+        public List<Models.Watch> GetPurchaseHistory(int? pageNumber, int? pageSize, string username, out int count)
+        {
+            User user = userRepository.Get().Where(u => u.UserName == username).SingleOrDefault();
+
+            if (user == null)
+                throw new NotFoundException("کاربر");
+
+            IQueryable<Models.Watch> result = userRepository.Get()
+                .Where(u => u.Id == user.Id)
+                .Include(u => u.Requests.Select(r => r.Watch.Brand))
+                .Include(u => u.Requests.Select(r => r.Watch.Images))
+                .Include(u => u.Requests.Select(r => r.Address))
+                .SelectMany(u => u.Requests.Select(r => r.Watch))
+                .OrderByDescending(w => w.DateCreated)
+                .AsQueryable();
+
+            count = result.Count();
+
+            if (pageNumber.HasValue && pageSize.HasValue)
+                result = result.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
+
+            return result.ToList();
         }
 
         public Seller GetSellerByUserId(int userId)
@@ -454,7 +533,7 @@ namespace Watch.Business
         #endregion []
 
         #region [Address]
-        public void AddAddress(int userId, string city, string fullAddress, string phoneNumber, string name, string family, string mainPhoneNumner, Models.Gender? gender)
+        public void AddAddress(int userId, string city, string fullAddress, string phoneNumber, string name, string family, string nationalCode, Models.Gender? gender)
         {
             User user = userRepository.GetById(userId);
 
@@ -469,6 +548,9 @@ namespace Watch.Business
 
             if (!string.IsNullOrEmpty(phoneNumber))
                 user.PhoneNumber = phoneNumber;
+
+            if (!string.IsNullOrEmpty(nationalCode))
+                user.NationalCode = nationalCode;
 
             if (gender != null)
                 user.Gender = gender;

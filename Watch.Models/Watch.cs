@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -9,6 +11,7 @@ using Watch.Models.Enum;
 
 namespace Watch.Models
 {
+    [JsonObject]
     public class Watch
     {
         public Watch()
@@ -21,10 +24,15 @@ namespace Watch.Models
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public bool IsAvailable { get; set; }
+        public bool IsWatch24Guaranted { get; set; }
         public bool IsHeader { get; set; }
         public bool IsBoxed { get; set; }
         //Determines if user can suggest price on this particular watch
         public bool SuggestPrice { get; set; }
+        [DefaultValue(1)]
+        public int MinDeliveryTime { get; set; }
+        [DefaultValue(1)]
+        public int MaxDeliveryTime { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string RefNo { get; set; }

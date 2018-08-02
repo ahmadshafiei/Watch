@@ -37,7 +37,7 @@ namespace Watch.Api
             this.authenticationBusiness = authenticationBusiness;
         }
 
-        public async Task<IResponse> Register(User user)
+        public async Task<IResponse> Register(UserViewModel user)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace Watch.Api
                     throw new Exception(stringBuilder.ToString());
                 }
 
-                await authenticationBusiness.Register(user);
+                await authenticationBusiness.Register((User)user);
                 return new Response<User>();
             }
             catch (Exception e)

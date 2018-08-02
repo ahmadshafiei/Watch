@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Watch.Business.Exceptions;
 using Watch.DataAccess.Identity;
 using Watch.DataAccess.Repositories;
 using Watch.DataAccess.UnitOfWork;
@@ -15,12 +16,14 @@ namespace Watch.Business
     {
         private readonly SellerRepository sellerRepository;
         private readonly UserRepository userRepository;
+        private readonly ImageRepository imageRepository;
         private readonly UnitOfWork unitOfWork;
 
-        public StoreBusiness(SellerRepository sellerRepository, UserRepository userRepository, UnitOfWork unitOfWork)
+        public StoreBusiness(SellerRepository sellerRepository, UserRepository userRepository, UnitOfWork unitOfWork, ImageRepository imageRepository)
         {
             this.sellerRepository = sellerRepository;
             this.userRepository = userRepository;
+            this.imageRepository = imageRepository;
             this.unitOfWork = unitOfWork;
         }
 
@@ -71,13 +74,81 @@ namespace Watch.Business
         {
             searchExp = searchExp ?? "";
 
-            return sellerRepository.GetAll(out count, s => s.StoreName.Contains(searchExp) || s.PhoneNumber.Contains(searchExp) || s.Tell.Contains(searchExp), (pageNumber - 1) * pageSize, pageSize, s => s.Id, s => s.User);
+            return sellerRepository.GetAll(out count, s => s.StoreName.Contains(searchExp) || s.PhoneNumber.Contains(searchExp) || s.Tell.Contains(searchExp), (pageNumber - 1) * pageSize, pageSize, s => s.Id, s => s.User).Include(s => s.Images).ToList();
         }
 
         public void RemoveStore(int storeId)
         {
             sellerRepository.DeleteById(storeId);
             unitOfWork.Commit();
+        }
+
+        public List<Image> GetAllStoreImages(string username)
+        {
+            User user = userRepository.Get().Where(u => u.UserName == username).SingleOrDefault();
+
+            if (user == null)
+                throw new NotFoundException("کاربر");
+
+            Seller seller = sellerRepository.Get().Where(s => s.User_Id == user.Id).Include(s => s.Images).SingleOrDefault();
+
+            if (seller == null)
+                throw new NotFoundException("فروشنده");
+
+            return seller.Images;
+        }
+
+        public bool AddImages(List<byte[]> images, string username, out int count)
+        {
+            User user = userRepository.Get().Where(u => u.UserName == username).SingleOrDefault();
+
+            if (user == null)
+                throw new NotFoundException("کاربر");
+
+            Seller seller = sellerRepository.Get().Where(s => s.User_Id == user.Id).Include(s => s.Images).SingleOrDefault();
+
+            if (seller == null)
+                throw new NotFoundException("فروشنده");
+
+            count = 3 - seller.Images.Count;
+
+            if (images.Count + seller.Images.Count > 3)
+                return false;
+
+            seller.Images = new List<Image>();
+
+            foreach (byte[] image in images)
+                seller.Images.Add(new Image
+                {
+                    SellerId = seller.Id,
+                    Path = Utility.Image.Save(image)
+
+                });
+
+            unitOfWork.Commit();
+
+            return true;
+        }
+
+        public bool RemoveImage(int imageId, string username)
+        {
+            User user = userRepository.Get().Where(u => u.UserName == username).SingleOrDefault();
+
+            if (user == null)
+                throw new NotFoundException("کاربر");
+
+            Seller seller = sellerRepository.Get().Where(s => s.User_Id == user.Id).Include(s => s.Images).SingleOrDefault();
+
+            if (seller == null)
+                throw new NotFoundException("فروشنده");
+
+            if (seller.Images.Any(i => i.Id == imageId))
+                imageRepository.DeleteById(imageId);
+            else
+                return false;
+
+            return true;
+
         }
     }
 }

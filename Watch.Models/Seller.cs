@@ -24,6 +24,7 @@ namespace Watch.Models
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public string LogoPath { get; set; }
+        public List<Image> Images { get; set; }
         public int User_Id { get; set; }
         [ForeignKey("User_Id")]
         public User User { get; set; }

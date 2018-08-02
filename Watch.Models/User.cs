@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Watch.Models
 {
@@ -33,6 +34,10 @@ namespace Watch.Models
         public List<StoreBookmark> BookmarkedStores { get; set; }
         public List<Watch> Watches { get; set; }
         public List<SuggestPrice> SuggestedPrices { get; set; }
+
+        //Baraye WatchDetail ke lat o lng e seller ro mikhad
+        [NotMapped]
+        public Seller Store { get; set; }
     }
 
     public enum Gender
