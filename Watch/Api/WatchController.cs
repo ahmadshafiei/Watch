@@ -32,7 +32,7 @@ namespace Watch.Api
 
         #region [WATCH-CRUD]
 
-        [Authorize(Roles = "Admin,Seller")]
+        [Authorize]
         [HttpPost]
         public async Task<IResponse> InsertWatch(Models.Watch watch)
         {
@@ -49,7 +49,7 @@ namespace Watch.Api
             }
         }
 
-        [Authorize(Roles = "Admin,Seller")]
+        [Authorize]
         [HttpGet]
         public IResponse DeleteWatch(int id)
         {
@@ -64,7 +64,7 @@ namespace Watch.Api
             }
         }
 
-        [Authorize(Roles = "Admin,Seller")]
+        [Authorize]
         [HttpPost]
         public IResponse UpdateWatch(Models.Watch watch)
         {
@@ -113,7 +113,10 @@ namespace Watch.Api
         public IResponse GetBestProducts(int[] brands, int? pageNumber = null, int? pageSize = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
-            result.Data = watchBusiness.GetBestProducts(pageNumber, pageSize, brands, out result.Count);
+
+            string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+            result.Data = watchBusiness.GetBestProducts(pageNumber, pageSize, brands, userName, out result.Count);
             return new Response<Models.Watch>
             {
                 Result = result
@@ -160,7 +163,10 @@ namespace Watch.Api
             try
             {
                 PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
-                result.Data = watchBusiness.GetStoreWatches(storeId, pageNumber, pageSize, out result.Count);
+
+                string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+                result.Data = watchBusiness.GetStoreWatches(storeId, pageNumber, pageSize, userName, out result.Count);
                 return new Response<Models.Watch>
                 {
                     Result = result
@@ -182,7 +188,10 @@ namespace Watch.Api
             try
             {
                 PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
-                result.Data = watchBusiness.GetStoreBestWatches(storeId, pageNumber, pageSize, out result.Count);
+
+                string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+                result.Data = watchBusiness.GetStoreBestWatches(storeId, pageNumber, pageSize, userName, out result.Count);
                 return new Response<Models.Watch>
                 {
                     Result = result
@@ -202,7 +211,10 @@ namespace Watch.Api
         public IResponse GetLatestWatches(int[] brands, int? pageNumber = null, int? pageSize = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
-            result.Data = watchBusiness.GetLatestProducts(pageNumber, pageSize, brands, out result.Count);
+
+            string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+            result.Data = watchBusiness.GetLatestProducts(pageNumber, pageSize, brands, userName, out result.Count);
             return new Response<Models.Watch>
             {
                 Result = result
@@ -213,7 +225,10 @@ namespace Watch.Api
         public IResponse GetTopSellWatches(int[] brands, int? pageNumber = null, int? pageSize = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
-            result.Data = watchBusiness.GetTopSellWatches(pageNumber, pageSize, brands, out result.Count);
+
+            string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+            result.Data = watchBusiness.GetTopSellWatches(pageNumber, pageSize, brands, userName, out result.Count);
             return new Response<Models.Watch>
             {
                 Result = result
@@ -225,7 +240,9 @@ namespace Watch.Api
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
 
-            result.Data = watchBusiness.GetLatestMenWatches(pageNumber, pageSize, out result.Count);
+            string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+            result.Data = watchBusiness.GetLatestMenWatches(pageNumber, pageSize, userName, out result.Count);
 
             return new Response<Models.Watch>
             {
@@ -238,7 +255,9 @@ namespace Watch.Api
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
 
-            result.Data = watchBusiness.GetLatestWomenWatches(pageNumber, pageSize, out result.Count);
+            string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+            result.Data = watchBusiness.GetLatestWomenWatches(pageNumber, pageSize, userName, out result.Count);
 
             return new Response<Models.Watch>
             {
@@ -317,7 +336,9 @@ namespace Watch.Api
             {
                 PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
 
-                result.Data = watchBusiness.GetSellerWatches(sellerId, pageNumber, pageNumber, out result.Count);
+                string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+                result.Data = watchBusiness.GetSellerWatches(sellerId, pageNumber, pageNumber, userName, out result.Count);
 
                 return new Response<Models.Watch>
                 {
@@ -341,7 +362,9 @@ namespace Watch.Api
             {
                 PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
 
-                result.Data = watchBusiness.GetRecommendedWatches(brandId);
+                string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+                result.Data = watchBusiness.GetRecommendedWatches(brandId, userName);
 
                 return new Response<Models.Watch>
                 {
@@ -438,7 +461,9 @@ namespace Watch.Api
         public IResponse GetPurchaseHistory(int? pageNumber = null, int? pageSize = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
-            result.Data = watchBusiness.GetPurchaseHistory(pageNumber, pageSize,User.Identity.Name, out result.Count);
+            
+            result.Data = watchBusiness.GetPurchaseHistory(pageNumber, pageSize, User.Identity.Name, out result.Count);
+
             return new Response<Models.Watch>
             {
                 Result = result

@@ -7,7 +7,6 @@ using Watch.Models;
 using System;
 using Watch.Business.Exceptions;
 using Watch.Models.Enum;
-using System.IO;
 
 namespace Watch.Business
 {
@@ -112,7 +111,7 @@ namespace Watch.Business
         #endregion
 
         #region [Watch , Brand]
-        public List<Models.Watch> GetBestProducts(int? pageNumber, int? pageSize, int[] brands, out int count)
+        public List<Models.Watch> GetBestProducts(int? pageNumber, int? pageSize, int[] brands, string userName, out int count)
         {
             IQueryable<Models.Watch> result = watchRepository.Get().Include(w => w.Images);
 
@@ -120,6 +119,14 @@ namespace Watch.Business
                 result = result.Where(w => w.Brand_Id.HasValue ? brands.ToList().Contains(w.Brand_Id.Value) : false);
 
             result = result.OrderByDescending(w => w.WatchBookmarks.Count);
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                result = result.Include(w => w.WatchBookmarks.Select(wb => wb.User));
+
+                foreach (Models.Watch watch in result)
+                    watch.IsBookmarked = watch.WatchBookmarks.Any(wb => wb.User.UserName == userName);
+            }
 
             count = result.Count();
 
@@ -155,7 +162,7 @@ namespace Watch.Business
             return result.ToList();
         }
 
-        public List<Models.Watch> GetStoreWatches(int storeId, int? pageNumber, int? pageSize, out int count)
+        public List<Models.Watch> GetStoreWatches(int storeId, int? pageNumber, int? pageSize, string userName, out int count)
         {
             Seller store = sellerRepository.GetById(storeId);
 
@@ -165,6 +172,14 @@ namespace Watch.Business
             int userId = store.User_Id;
 
             IQueryable<Models.Watch> result = watchRepository.Get().Where(w => w.OwnerUser_Id == userId).OrderByDescending(w => w.DateCreated);
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                result = result.Include(w => w.WatchBookmarks.Select(wb => wb.User));
+
+                foreach (Models.Watch watch in result)
+                    watch.IsBookmarked = watch.WatchBookmarks.Any(wb => wb.User.UserName == userName);
+            }
 
             count = result.Count();
 
@@ -177,7 +192,7 @@ namespace Watch.Business
 
         }
 
-        public List<Models.Watch> GetStoreBestWatches(int storeId, int? pageNumber, int? pageSize, out int count)
+        public List<Models.Watch> GetStoreBestWatches(int storeId, int? pageNumber, int? pageSize, string userName, out int count)
         {
             Seller seller = sellerRepository.GetById(storeId);
 
@@ -187,6 +202,14 @@ namespace Watch.Business
             int userId = seller.User_Id;
 
             IQueryable<Models.Watch> result = watchRepository.Get().Where(w => w.OwnerUser_Id == userId).Include(w => w.WatchBookmarks).OrderByDescending(w => w.WatchBookmarks.Count);
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                result = result.Include(w => w.WatchBookmarks.Select(wb => wb.User));
+
+                foreach (Models.Watch watch in result)
+                    watch.IsBookmarked = watch.WatchBookmarks.Any(wb => wb.User.UserName == userName);
+            }
 
             count = result.Count();
 
@@ -223,7 +246,7 @@ namespace Watch.Business
             return result.ToList();
         }
 
-        public List<Models.Watch> GetLatestProducts(int? pageNumber, int? pageSize, int[] brands, out int count)
+        public List<Models.Watch> GetLatestProducts(int? pageNumber, int? pageSize, int[] brands, string userName, out int count)
         {
             IQueryable<Models.Watch> result = watchRepository.Get().Include(w => w.Images);
 
@@ -232,6 +255,14 @@ namespace Watch.Business
 
             result = result.OrderByDescending(w => w.DateCreated);
 
+            if (string.IsNullOrEmpty(userName))
+            {
+                result = result.Include(w => w.WatchBookmarks.Select(wb => wb.User));
+
+                foreach (Models.Watch watch in result)
+                    watch.IsBookmarked = watch.WatchBookmarks.Any(wb => wb.User.UserName == userName);
+            }
+
             count = result.Count();
 
             if (pageNumber.HasValue && pageSize.HasValue)
@@ -242,7 +273,7 @@ namespace Watch.Business
             return result.ToList();
         }
 
-        public List<Models.Watch> GetTopSellWatches(int? pageNumber, int? pageSize, int[] brands, out int count)
+        public List<Models.Watch> GetTopSellWatches(int? pageNumber, int? pageSize, int[] brands, string userName, out int count)
         {
             IQueryable<Models.Watch> result = watchRepository.Get().Include(w => w.Images);
 
@@ -251,6 +282,14 @@ namespace Watch.Business
 
             result = result.OrderByDescending(w => w.Requests.Count);
 
+            if (string.IsNullOrEmpty(userName))
+            {
+                result = result.Include(w => w.WatchBookmarks.Select(wb => wb.User));
+
+                foreach (Models.Watch watch in result)
+                    watch.IsBookmarked = watch.WatchBookmarks.Any(wb => wb.User.UserName == userName);
+            }
+
             count = result.Count();
 
             if (pageNumber.HasValue && pageSize.HasValue)
@@ -261,12 +300,20 @@ namespace Watch.Business
             return result.ToList();
         }
 
-        public List<Models.Watch> GetLatestMenWatches(int? pageNumber, int? pageSize, out int count)
+        public List<Models.Watch> GetLatestMenWatches(int? pageNumber, int? pageSize, string userName, out int count)
         {
             IQueryable<Models.Watch> result = watchRepository.Get().Where(w => w.Gender == Models.Gender.Male).OrderByDescending(w => w.DateCreated);
 
             count = result.Count();
 
+            if (string.IsNullOrEmpty(userName))
+            {
+                result = result.Include(w => w.WatchBookmarks.Select(wb => wb.User));
+
+                foreach (Models.Watch watch in result)
+                    watch.IsBookmarked = watch.WatchBookmarks.Any(wb => wb.User.UserName == userName);
+            }
+
             if (pageNumber.HasValue && pageSize.HasValue)
                 result = result.Skip((pageNumber.Value - 1) * pageSize.Value).Take(pageSize.Value);
             else
@@ -275,9 +322,17 @@ namespace Watch.Business
             return result.ToList();
         }
 
-        public List<Models.Watch> GetLatestWomenWatches(int? pageNumber, int? pageSize, out int count)
+        public List<Models.Watch> GetLatestWomenWatches(int? pageNumber, int? pageSize, string userName, out int count)
         {
             IQueryable<Models.Watch> result = watchRepository.Get().Where(w => w.Gender == Models.Gender.Female).OrderByDescending(w => w.DateCreated);
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                result = result.Include(w => w.WatchBookmarks.Select(wb => wb.User));
+
+                foreach (Models.Watch watch in result)
+                    watch.IsBookmarked = watch.WatchBookmarks.Any(wb => wb.User.UserName == userName);
+            }
 
             count = result.Count();
 
@@ -333,7 +388,7 @@ namespace Watch.Business
             return result;
         }
 
-        public List<Models.Watch> GetSellerWatches(int sellerId, int? pageNumber, int? pageSize, out int count)
+        public List<Models.Watch> GetSellerWatches(int sellerId, int? pageNumber, int? pageSize, string userName, out int count)
         {
             Seller seller = sellerRepository.Get().Where(s => s.Id == sellerId).Include(s => s.User.Watches).FirstOrDefault();
 
@@ -341,6 +396,14 @@ namespace Watch.Business
                 throw new NotFoundException("فروشنده");
 
             IQueryable<Models.Watch> result = seller.User.Watches.OrderByDescending(w => w.DateCreated).AsQueryable();
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                result = result.Include(w => w.WatchBookmarks.Select(wb => wb.User));
+
+                foreach (Models.Watch watch in result)
+                    watch.IsBookmarked = watch.WatchBookmarks.Any(wb => wb.User.UserName == userName);
+            }
 
             count = result.Count();
 
@@ -352,7 +415,7 @@ namespace Watch.Business
             return result.ToList();
         }
 
-        public List<Models.Watch> GetRecommendedWatches(int brandId)
+        public List<Models.Watch> GetRecommendedWatches(int brandId, string userName)
         {
             Brand brand = brandRepository.Get().Where(b => b.Id == brandId).Include(b => b.Watches).FirstOrDefault();
 
@@ -360,6 +423,14 @@ namespace Watch.Business
                 throw new NotFoundException("برند");
 
             IQueryable<Models.Watch> result = brand.Watches.OrderBy(w => Guid.NewGuid()).Take(4).AsQueryable();
+
+            if (string.IsNullOrEmpty(userName))
+            {
+                result = result.Include(w => w.WatchBookmarks.Select(wb => wb.User));
+
+                foreach (Models.Watch watch in result)
+                    watch.IsBookmarked = watch.WatchBookmarks.Any(wb => wb.User.UserName == userName);
+            }
 
             List<Models.Watch> listedResult = result.ToList();
 
