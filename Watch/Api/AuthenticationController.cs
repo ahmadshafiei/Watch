@@ -81,5 +81,12 @@ namespace Watch.Api
                 };
             }
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin,Seller")]
+        public List<string> GetCurrentRoles()
+        {
+            return authenticationBusiness.GetCurrentRoles(User.Identity.Name);
+        }
     }
 }

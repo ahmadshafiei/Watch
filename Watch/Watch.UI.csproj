@@ -230,8 +230,11 @@
   <ItemGroup>
     <Content Include="AngularJs\Config.js" />
     <Content Include="AngularJs\Controllers\loginCtrl.js" />
-    <Content Include="AngularJs\Controllers\registerSellerCtrl.js" />
-    <Content Include="AngularJs\Controllers\sellerListCtrl.js" />
+    <Content Include="AngularJs\Controllers\AdminPanel\registerSellerCtrl.js" />
+    <Content Include="AngularJs\Controllers\AdminPanel\sellerListCtrl.js" />
+    <Content Include="AngularJs\Controllers\SellerPanel\sellerProfile.controller.js" />
+    <Content Include="AngularJs\Controllers\SellerPanel\sellerSalesHistory.controller.js" />
+    <Content Include="AngularJs\Controllers\SellerPanel\sellerWatches.controller.js" />
     <Content Include="AngularJs\Main.js" />
     <Content Include="AngularJs\Services\authenticationService.js" />
     <Content Include="AngularJs\Services\sellerService.js" />
@@ -521,10 +524,13 @@
     <Content Include="Statics\500.html" />
     <Content Include="Statics\503.html" />
     <Content Include="Statics\index.html" />
-    <Content Include="Statics\registerSeller.html" />
-    <Content Include="Statics\removeConfirmationPartial.html" />
-    <Content Include="Statics\sellerList.html" />
-    <Content Include="Statics\storeLocationOnMap.html" />
+    <Content Include="Statics\AdminPanel\registerSeller.html" />
+    <Content Include="Statics\AdminPanel\removeConfirmationPartial.html" />
+    <Content Include="Statics\AdminPanel\sellerList.html" />
+    <Content Include="Statics\AdminPanel\storeLocationOnMap.html" />
+    <Content Include="Statics\SellerPanel\profile.html" />
+    <Content Include="Statics\SellerPanel\salesHistory.html" />
+    <Content Include="Statics\SellerPanel\watches.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

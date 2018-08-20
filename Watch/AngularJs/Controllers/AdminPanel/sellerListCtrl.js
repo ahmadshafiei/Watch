@@ -36,7 +36,7 @@ app.controller('sellerListCtrl', function ($scope, sellerService, ngDialog, toas
     $scope.removeStore = function (id) {
         $scope.removeStoreId = id;
         ngDialog.open({
-            template: '/Statics/removeConfirmationPartial.html',
+            template: '/Statics/AdminPanel/removeConfirmationPartial.html',
             className: 'ngdialog-theme-default',
             width: '50%',
             height: '50%',
@@ -62,7 +62,7 @@ app.controller('sellerListCtrl', function ($scope, sellerService, ngDialog, toas
         $scope.storeLatitude = lat;
         $scope.storeLongitude = lng;
         ngDialog.open({
-            template: '/Statics/storeLocationOnMap.html',
+            template: '/Statics/AdminPanel/storeLocationOnMap.html',
             className: 'ngdialog-theme-default',
             width: '800px',
             height: '500px',

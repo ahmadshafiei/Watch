@@ -149,5 +149,22 @@ namespace Watch.Api
         }
 
         #endregion
+
+        #region [Seller-Panel]
+
+        [Authorize(Roles = "Seller")]
+        [HttpGet]
+        public IResponse GetUserProfile()
+        {
+            return new Response<User>
+            {
+                Result = new PagedResult<User>
+                {
+                    Data = new List<User> { storeBusiness.GetUserProfile(User.Identity.Name) },
+                    Count = 1
+                }
+            };
+        }
+        #endregion
     }
 }

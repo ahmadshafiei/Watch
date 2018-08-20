@@ -1,0 +1,106 @@
+﻿<div class="container" ng-init="init()">
+    <div class="row">
+        <form name="profileForm">
+            <div class="col-md-6 col-sm-12">
+                <h4>اطلاعات شخصی</h4>
+                <hr />
+                <div>
+                    <ul class="list-group" style="padding:0">
+                        <li class="list-group-item">
+                            <label class="profile-info-header">
+                                <span>نام</span>
+                                <span class="text-warning" ng-click="editProfile.name=true" ng-if="editProfile.name==false">ویرایش</span>
+                                <span class="text-danger" ng-click="editProfile.name=false" ng-if="editProfile.name==true">لغو</span>
+                            </label>
+                            <br />
+                            <span ng-if="!editProfile.name">{{user.Name}}</span>
+                            <input ng-model="user.Name" ng-if="editProfile.name" name="name" class="form-control" tabindex="1" />
+                        </li>
+                        <li class="list-group-item">
+                            <label class="profile-info-header">
+                                <span>نام خانوادگی</span>
+                                <span class="text-warning" ng-click="editProfile.family=true" ng-if="editProfile.family==false">ویرایش</span>
+                                <span class="text-danger" ng-click="editProfile.family=false" ng-if="editProfile.family==true">لغو</span>
+                            </label>
+                            <br />
+                            <span ng-if="!editProfile.family">{{user.Family}}</span>
+                            <input ng-model="user.Family" ng-if="editProfile.family" name="family" class="form-control" tabindex="2" />
+                        </li>
+                        <li class="list-group-item">
+                            <label class="profile-info-header">
+                                <span>شماره همراه</span>
+                                <span class="text-warning" ng-click="editProfile.phoneNumber=true" ng-if="editProfile.phoneNumber==false">ویرایش</span>
+                                <span class="text-danger" ng-click="editProfile.phoneNumber=false" ng-if="editProfile.phoneNumber==true">لغو</span>
+                            </label>
+                            <br />
+                            <span ng-if="!editProfile.phoneNumber">{{user.PhoneNumber}}</span>
+                            <input ng-model="user.PhoneNumber" ng-if="editProfile.phoneNumber" name="phoneNumber" class="form-control" tabindex="3"  ng-pattern="/^09[0-9]{9}$/"/>
+                            <span ng-show="profileForm.phoneNumber.$invalid && profileForm.phoneNumber.$dirty">
+                                <span ng-show="profileForm.phoneNumber.$error.pattern" class="text-danger">09xxxxxxxxx</span>
+                            </span>
+                        </li>
+                        <li class="list-group-item">
+                            <label class="profile-info-header">
+                                <span>کد ملی</span>
+                                <span class="text-warning" ng-click="editProfile.nationalCode=true" ng-if="editProfile.nationalCode==false">ویرایش</span>
+                                <span class="text-danger" ng-click="editProfile.nationalCode=false" ng-if="editProfile.nationalCode==true">لغو</span>
+                            </label>
+                            <br />
+                            <span ng-if="!editProfile.nationalCode">{{user.NationalCode}}</span>
+                            <input ng-model="user.NationalCode" ng-if="editProfile.nationalCode" name="nationalCode" class="form-control" tabindex="4"  ng-pattern="/^[0-9]{10}$/"/>
+                            <span ng-show="profileForm.nationalCode.$invalid && profileForm.nationalCode.$dirty">
+                                <span ng-show="profileForm.nationalCode.$error.pattern" class="text-danger">کد ملی 10 رقمی می باشد</span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <h4>اطلاعات فروشگاه</h4>
+                <hr />
+                <div>
+                    <ul class="list-group" style="padding:0">
+                        <li class="list-group-item">
+                            <label class="profile-info-header">
+                                <span>نام فروشگاه</span>
+                                <span class="text-warning" ng-click="editProfile.storeName=true" ng-if="editProfile.storeName==false">ویرایش</span>
+                                <span class="text-danger" ng-click="editProfile.storeName=false" ng-if="editProfile.storeName==true">لغو</span>
+                            </label>
+                            <br />
+                            <span ng-if="!editProfile.storeName">{{user.Store.StoreName}}</span>
+                            <input ng-model="user.Store.StoreName" ng-if="editProfile.storeName" name="storeName" class="form-control" tabindex="5" />
+                        </li>
+                        <li class="list-group-item">
+                            <label class="profile-info-header">
+                                <span>شماره تماس</span>
+                                <span class="text-warning" ng-click="editProfile.storeTell=true" ng-if="editProfile.storeTell==false">ویرایش</span>
+                                <span class="text-danger" ng-click="editProfile.storeTell=false" ng-if="editProfile.storeTell==true">لغو</span>
+                            </label>
+                            <br />
+                            <span ng-if="!editProfile.storeTell">{{user.Store.Tell}}</span>
+                            <input ng-model="user.Store.Tell" ng-if="editProfile.storeTell" name="storeTell" class="form-control" tabindex="6" ng-pattern="/^[0-9]*$/" />
+                            <span ng-show="profileForm.storeTell.$invalid && profileForm.storeTell.$dirty">
+                                <span ng-show="profileForm.storeTell.$error.pattern" class="text-danger">شماره تماس به صورت رقم می باشد</span>
+                            </span>
+                        </li>
+                        <li class="list-group-item">
+                            <label class="profile-info-header">
+                                <span>شماره همراه</span>
+                                <span class="text-warning" ng-click="editProfile.storePhoneNumber=true" ng-if="editProfile.storePhoneNumber==false">ویرایش</span>
+                                <span class="text-danger" ng-click="editProfile.storePhoneNumber=false" ng-if="editProfile.storePhoneNumber==true">لغو</span>
+                            </label>
+                            <br />
+                            <span ng-if="!editProfile.storePhoneNumber">{{user.Store.PhoneNumber}}</span>
+                            <input ng-model="user.Store.PhoneNumber" ng-if="editProfile.storePhoneNumber" name="storePhoneNumber" class="form-control" tabindex="7" ng-pattern="/^09[0-9]{9}$/" />
+                            <span ng-show="profileForm.storePhoneNumber.$invalid && profileForm.storePhoneNumber.$dirty">
+                                <span ng-show="profileForm.storePhoneNumber.$error.pattern" class="text-danger">09xxxxxxxxx</span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+        <hr />
+        <button type="button" class="btn btn-primary" ng-click="editProfile()" ng-disabled="profileForm.$invalid">ثبت تغییرات</button>
+    </div>
+</div>

@@ -150,5 +150,22 @@ namespace Watch.Business
             return true;
 
         }
+
+        public User GetUserProfile(string username)
+        {
+            User user = userRepository.Get().Where(u => u.UserName == username).SingleOrDefault();
+
+            if (user == null)
+                throw new NotFoundException("کاربر");
+
+            Seller seller = sellerRepository.Get().Where(s => s.User_Id == user.Id).Include(s => s.Images).SingleOrDefault();
+
+            if (seller == null)
+                throw new NotFoundException("فروشنده");
+
+            user.Store = seller;
+
+            return user;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,5 +48,15 @@ namespace Watch.Business
             await userManager.SendEmailAsync(user.Id, "باز یابی رمز عبور", "");
         }
 
+        public List<string> GetCurrentRoles(string username)
+        {
+            User user = userRepository.Get().Include(u => u.UserRoles.Select(ur => ur.Role)).Where(u => u.UserName == username).SingleOrDefault();
+
+            if (user == null)
+                throw new NotFoundException("کاربر");
+
+            return user.UserRoles.Select(ur => ur.Role.Name).ToList();
+
+        }
     }
 }
