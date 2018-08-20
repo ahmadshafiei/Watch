@@ -151,6 +151,13 @@ namespace Watch.Business
 
         }
 
+        public User UpdateStoreProfile(User user)
+        {
+            userRepository.Update(user);
+            unitOfWork.Commit();
+            return user;
+        }
+
         public User GetUserProfile(string username)
         {
             User user = userRepository.Get().Where(u => u.UserName == username).SingleOrDefault();

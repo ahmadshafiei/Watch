@@ -22,4 +22,8 @@ app.service('sellerService', function ($http) {
         return $http({ method: 'GET', url: '/Api/Store/GetUserProfile' });
     }
 
+    this.updateStoreProfile = function (user) {
+        return $http({ method: 'PUT', url: '/Api/Store/UpdateStoreProfile', data: user });
+    }
+
 });

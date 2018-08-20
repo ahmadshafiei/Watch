@@ -1,6 +1,6 @@
 ﻿var app = angular.module('watch');
 
-app.controller('sellerProfile.controller', function ($scope, sellerService) {
+app.controller('sellerProfile.controller', function ($scope, sellerService, toaster) {
 
     $scope.editProfile = {
         name: false,
@@ -18,8 +18,9 @@ app.controller('sellerProfile.controller', function ($scope, sellerService) {
 
     $scope.editProfile = function () {
 
-        sellerService.editProfile().then(function (response) {
-
+        sellerService.editProfile($scope.user).then(function (response) {
+            toaster.pop('info', 'پروفایل با موفقیت ویرایش شد');
+            $scope.user = response.data.Result.Data[0];
         });
 
     }

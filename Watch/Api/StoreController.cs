@@ -165,6 +165,21 @@ namespace Watch.Api
                 }
             };
         }
+
+        [Authorize(Roles = "Seller")]
+        [HttpPut]
+        public IResponse UpdateStoreProfile(User user)
+        {
+
+            return new Response<User>
+            {
+                Result = new PagedResult<User>
+                {
+                    Data = new List<User> { storeBusiness.UpdateStoreProfile(user) },
+                    Count = 1
+                }
+            };
+        }
         #endregion
     }
 }
