@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,9 +40,27 @@ namespace Watch.Business
             unitOfWork.Commit();
         }
 
-        public List<int> GetAllWatchBookmarks(int userId)
+        public List<Models.Watch> GetAllWatchBookmarks(int userId, int? pageNumber, int? pageSize, out int count)
         {
-            return watchBookmarkRepository.Get().Where(wb => wb.User_Id == userId).Select(wb => wb.Watch_Id).ToList();
+            IQueryable<Models.Watch> watches;
+
+            if (pageNumber.HasValue && pageSize.HasValue)
+                watches = watchBookmarkRepository.GetAll(out count, wb => wb.User_Id == userId, (pageNumber.Value - 1) * pageSize.Value, pageSize.Value, wb => wb.Watch.Id, wb => wb.Watch).Select(wb => wb.Watch);
+            else
+            {
+                watches = watchBookmarkRepository.Get()
+                    .Include(wb => wb.Watch)
+                    .Where(wb => wb.User_Id == userId)
+                    .OrderByDescending(wb => wb.Id).Select(wb => wb.Watch);
+
+                count = watches.Count();
+            }
+
+            List<Models.Watch> result = watches.ToList();
+
+            result.ForEach(w => { w.IsBookmarked = true; });
+
+            return result;
         }
 
         public void BookmarkStore(int userId, int storeId, bool bookmark)
@@ -57,9 +76,23 @@ namespace Watch.Business
             unitOfWork.Commit();
         }
 
-        public List<int> GetAllStoreBookmarks(int userId)
+        public List<Seller> GetAllStoreBookmarks(int userId, int? pageNumber, int? pageSize, out int count)
         {
-            return storeBookmarkRepository.Get().Where(sb => sb.User_Id == userId).Select(sb => sb.Seller_Id).ToList();
+            IQueryable<Seller> sellers;
+
+            if (pageNumber.HasValue && pageSize.HasValue)
+                sellers = storeBookmarkRepository.GetAll(out count, wb => wb.User_Id == userId, (pageNumber.Value - 1) * pageSize.Value, pageSize.Value, wb => wb.Store.Id, wb => wb.Store).Select(wb => wb.Store);
+            else
+            {
+                sellers = storeBookmarkRepository.Get()
+                    .Include(wb => wb.Store)
+                    .Where(wb => wb.User_Id == userId)
+                    .OrderByDescending(wb => wb.Id).Select(wb => wb.Store);
+
+                count = sellers.Count();
+            }
+
+            return sellers.ToList();
         }
     }
 }

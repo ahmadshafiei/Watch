@@ -29,6 +29,9 @@ namespace Watch.Business
 
         public void RegisterSeller(Seller seller)
         {
+            if (sellerRepository.GetAll().Any(s => s.User_Id == seller.User_Id))
+                throw new Exception("در حال حاضر مغازه ای با این نام کاربری موجود است");
+
             sellerRepository.Insert(seller);
             unitOfWork.Commit();
         }
@@ -74,7 +77,7 @@ namespace Watch.Business
         {
             searchExp = searchExp ?? "";
 
-            return sellerRepository.GetAll(out count, s => s.StoreName.Contains(searchExp) || s.PhoneNumber.Contains(searchExp) || s.Tell.Contains(searchExp), (pageNumber - 1) * pageSize, pageSize, s => s.Id, s => s.User).Include(s => s.Images).ToList();
+            return sellerRepository.GetAll(out count, s => s.StoreName.Contains(searchExp) || s.PhoneNumber.Contains(searchExp) || s.Tell.Contains(searchExp), (pageNumber - 1) * pageSize, pageSize, s => s.Id, s => s.User).Include(s => s.Images).Include(s => s.Images).ToList();
         }
 
         public void RemoveStore(int storeId)

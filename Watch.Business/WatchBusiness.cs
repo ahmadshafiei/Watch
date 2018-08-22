@@ -354,7 +354,7 @@ namespace Watch.Business
                 .FirstOrDefault();
 
             if (result.OwnerUser_Id.HasValue)
-                result.OwnerUser.Store = sellerRepository.GetById(result.OwnerUser_Id.Value);
+                result.OwnerUser.Store = sellerRepository.GetAll().Where(s => s.User_Id == result.OwnerUser_Id.Value).FirstOrDefault();
 
             if (result == null)
                 throw new NotFoundException("ساعت");
