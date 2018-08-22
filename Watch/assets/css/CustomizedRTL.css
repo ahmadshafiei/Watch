@@ -1,7 +1,7 @@
 ﻿body {
     direction: rtl !important;
     text-align: right !important;
-    background-color:#EEE !important;
+    background-color: #EEE !important;
 }
 
 div.order-lg-first > ul.nav.nav-tabs {
@@ -34,13 +34,22 @@ button[disabled="disabled"] {
 }
 
 .dropzone {
-    height:auto;
+    height: auto;
     width: 100%;
     display: inline-block;
     text-align: center;
 }
 
-.rounded{
-    width:100%;
-    height:300px;
+.rounded {
+    width: 100%;
+    height: 300px;
 }
+
+.profile-info-header {
+    display: block;
+}
+
+    .profile-info-header :last-child {
+        cursor: pointer;
+        float: left;
+    }

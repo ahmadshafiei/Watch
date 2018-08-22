@@ -25,7 +25,7 @@ namespace Watch.Controllers
             this.userManager = userManager;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Seller")]
         public ActionResult Index()
         {
             return View();
@@ -53,7 +53,7 @@ namespace Watch.Controllers
 
             var result = await signInManager.PasswordSignInAsync(email, password, true, false);
 
-            if (result == SignInStatus.Success && userManager.IsInRole(user.Id, "Admin"))
+            if (result == SignInStatus.Success && (userManager.IsInRole(user.Id, "Admin") || userManager.IsInRole(user.Id, "Seller")))
                 return RedirectToAction("Index");
             ViewBag.Error = "کلمه ی عبور یا نام کاربری اشتباه است";
             return View();

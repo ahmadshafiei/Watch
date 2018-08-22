@@ -62,7 +62,7 @@ app.controller('sellerListCtrl', function ($scope, sellerService, ngDialog, toas
         $scope.storeLatitude = lat;
         $scope.storeLongitude = lng;
         ngDialog.open({
-            template: '/Statics/storeLocationOnMap.html',
+            template: '/Statics/AdminPanel/storeLocationOnMap.html',
             className: 'ngdialog-theme-default',
             width: '800px',
             height: '500px',

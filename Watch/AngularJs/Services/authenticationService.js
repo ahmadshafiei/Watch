@@ -11,4 +11,8 @@ app.service('authenticationService', function ($http) {
         });
     };
 
+    this.getCurrentRoles = function () {
+        return $http({ method: 'GET', url: '/Api/Authentication/GetCurrentRoles' });
+    }
+
 });

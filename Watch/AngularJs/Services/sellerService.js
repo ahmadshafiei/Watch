@@ -15,8 +15,15 @@ app.service('sellerService', function ($http) {
     }
 
     this.removeStore = function (storeId) {
-        console.log(storeId);
         return $http({ method: 'GET', url: '/Api/Store/RemoveStore', params: { storeId: storeId } });
+    }
+
+    this.getUserProfile = function () {
+        return $http({ method: 'GET', url: '/Api/Store/GetUserProfile' });
+    }
+
+    this.updateStoreProfile = function (user) {
+        return $http({ method: 'PUT', url: '/Api/Store/UpdateStoreProfile', data: user });
     }
 
 });
