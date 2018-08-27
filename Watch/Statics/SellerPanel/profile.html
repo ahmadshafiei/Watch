@@ -9,22 +9,22 @@
                         <li class="list-group-item">
                             <label class="profile-info-header">
                                 <span>نام فروشگاه</span>
-                                <span class="text-warning" ng-click="editProfile.storeName=true" ng-if="editProfile.storeName==false">ویرایش</span>
-                                <span class="text-danger" ng-click="editProfile.storeName=false" ng-if="editProfile.storeName==true">لغو</span>
+                                <span class="text-warning" ng-click="canEditProfile.storeName=true" ng-if="canEditProfile.storeName==false">ویرایش</span>
+                                <span class="text-danger" ng-click="canEditProfile.storeName=false" ng-if="canEditProfile.storeName==true">لغو</span>
                             </label>
                             <br />
-                            <span ng-if="!editProfile.storeName">{{user.Store.StoreName}}</span>
-                            <input ng-model="user.Store.StoreName" ng-if="editProfile.storeName" name="storeName" class="form-control" tabindex="5" />
+                            <span ng-if="!canEditProfile.storeName">{{user.Store.StoreName}}</span>
+                            <input ng-model="user.Store.StoreName" ng-if="canEditProfile.storeName" name="storeName" class="form-control" tabindex="5" />
                         </li>
                         <li class="list-group-item">
                             <label class="profile-info-header">
                                 <span>شماره تماس</span>
-                                <span class="text-warning" ng-click="editProfile.storeTell=true" ng-if="editProfile.storeTell==false">ویرایش</span>
-                                <span class="text-danger" ng-click="editProfile.storeTell=false" ng-if="editProfile.storeTell==true">لغو</span>
+                                <span class="text-warning" ng-click="canEditProfile.storeTell=true" ng-if="canEditProfile.storeTell==false">ویرایش</span>
+                                <span class="text-danger" ng-click="canEditProfile.storeTell=false" ng-if="canEditProfile.storeTell==true">لغو</span>
                             </label>
                             <br />
-                            <span ng-if="!editProfile.storeTell">{{user.Store.Tell}}</span>
-                            <input ng-model="user.Store.Tell" ng-if="editProfile.storeTell" name="storeTell" class="form-control" tabindex="6" ng-pattern="/^[0-9]*$/" />
+                            <span ng-if="!canEditProfile.storeTell">{{user.Store.Tell}}</span>
+                            <input ng-model="user.Store.Tell" ng-if="canEditProfile.storeTell" name="storeTell" class="form-control" tabindex="6" ng-pattern="/^[0-9]*$/" />
                             <span ng-show="profileForm.storeTell.$invalid && profileForm.storeTell.$dirty">
                                 <span ng-show="profileForm.storeTell.$error.pattern" class="text-danger">شماره تماس به صورت رقم می باشد</span>
                             </span>
@@ -32,12 +32,12 @@
                         <li class="list-group-item">
                             <label class="profile-info-header">
                                 <span>شماره همراه</span>
-                                <span class="text-warning" ng-click="editProfile.storePhoneNumber=true" ng-if="editProfile.storePhoneNumber==false">ویرایش</span>
-                                <span class="text-danger" ng-click="editProfile.storePhoneNumber=false" ng-if="editProfile.storePhoneNumber==true">لغو</span>
+                                <span class="text-warning" ng-click="canEditProfile.storePhoneNumber=true" ng-if="canEditProfile.storePhoneNumber==false">ویرایش</span>
+                                <span class="text-danger" ng-click="canEditProfile.storePhoneNumber=false" ng-if="canEditProfile.storePhoneNumber==true">لغو</span>
                             </label>
                             <br />
-                            <span ng-if="!editProfile.storePhoneNumber">{{user.Store.PhoneNumber}}</span>
-                            <input ng-model="user.Store.PhoneNumber" ng-if="editProfile.storePhoneNumber" name="storePhoneNumber" class="form-control" tabindex="7" ng-pattern="/^09[0-9]{9}$/" />
+                            <span ng-if="!canEditProfile.storePhoneNumber">{{user.Store.PhoneNumber}}</span>
+                            <input ng-model="user.Store.PhoneNumber" ng-if="canEditProfile.storePhoneNumber" name="storePhoneNumber" class="form-control" tabindex="7" ng-pattern="/^09[0-9]{9}$/" />
                             <span ng-show="profileForm.storePhoneNumber.$invalid && profileForm.storePhoneNumber.$dirty">
                                 <span ng-show="profileForm.storePhoneNumber.$error.pattern" class="text-danger">09xxxxxxxxx</span>
                             </span>
@@ -53,32 +53,32 @@
                         <li class="list-group-item">
                             <label class="profile-info-header">
                                 <span>نام</span>
-                                <span class="text-warning" ng-click="editProfile.name=true" ng-if="editProfile.name==false">ویرایش</span>
-                                <span class="text-danger" ng-click="editProfile.name=false" ng-if="editProfile.name==true">لغو</span>
+                                <span class="text-warning" ng-click="canEditProfile.name=true" ng-if="canEditProfile.name==false">ویرایش</span>
+                                <span class="text-danger" ng-click="canEditProfile.name=false" ng-if="canEditProfile.name==true">لغو</span>
                             </label>
                             <br />
-                            <span ng-if="!editProfile.name">{{user.Name}}</span>
-                            <input ng-model="user.Name" ng-if="editProfile.name" name="name" class="form-control" tabindex="1" />
+                            <span ng-if="!canEditProfile.name">{{user.Name}}</span>
+                            <input ng-model="user.Name" ng-if="canEditProfile.name" name="name" class="form-control" tabindex="1" />
                         </li>
                         <li class="list-group-item">
                             <label class="profile-info-header">
                                 <span>نام خانوادگی</span>
-                                <span class="text-warning" ng-click="editProfile.family=true" ng-if="editProfile.family==false">ویرایش</span>
-                                <span class="text-danger" ng-click="editProfile.family=false" ng-if="editProfile.family==true">لغو</span>
+                                <span class="text-warning" ng-click="canEditProfile.family=true" ng-if="canEditProfile.family==false">ویرایش</span>
+                                <span class="text-danger" ng-click="canEditProfile.family=false" ng-if="canEditProfile.family==true">لغو</span>
                             </label>
                             <br />
-                            <span ng-if="!editProfile.family">{{user.Family}}</span>
-                            <input ng-model="user.Family" ng-if="editProfile.family" name="family" class="form-control" tabindex="2" />
+                            <span ng-if="!canEditProfile.family">{{user.Family}}</span>
+                            <input ng-model="user.Family" ng-if="canEditProfile.family" name="family" class="form-control" tabindex="2" />
                         </li>
                         <li class="list-group-item">
                             <label class="profile-info-header">
                                 <span>شماره همراه</span>
-                                <span class="text-warning" ng-click="editProfile.phoneNumber=true" ng-if="editProfile.phoneNumber==false">ویرایش</span>
-                                <span class="text-danger" ng-click="editProfile.phoneNumber=false" ng-if="editProfile.phoneNumber==true">لغو</span>
+                                <span class="text-warning" ng-click="canEditProfile.phoneNumber=true" ng-if="canEditProfile.phoneNumber==false">ویرایش</span>
+                                <span class="text-danger" ng-click="canEditProfile.phoneNumber=false" ng-if="canEditProfile.phoneNumber==true">لغو</span>
                             </label>
                             <br />
-                            <span ng-if="!editProfile.phoneNumber">{{user.PhoneNumber}}</span>
-                            <input ng-model="user.PhoneNumber" ng-if="editProfile.phoneNumber" name="phoneNumber" class="form-control" tabindex="3" ng-pattern="/^09[0-9]{9}$/" />
+                            <span ng-if="!canEditProfile.phoneNumber">{{user.PhoneNumber}}</span>
+                            <input ng-model="user.PhoneNumber" ng-if="canEditProfile.phoneNumber" name="phoneNumber" class="form-control" tabindex="3" ng-pattern="/^09[0-9]{9}$/" />
                             <span ng-show="profileForm.phoneNumber.$invalid && profileForm.phoneNumber.$dirty">
                                 <span ng-show="profileForm.phoneNumber.$error.pattern" class="text-danger">09xxxxxxxxx</span>
                             </span>
@@ -86,12 +86,12 @@
                         <li class="list-group-item">
                             <label class="profile-info-header">
                                 <span>کد ملی</span>
-                                <span class="text-warning" ng-click="editProfile.nationalCode=true" ng-if="editProfile.nationalCode==false">ویرایش</span>
-                                <span class="text-danger" ng-click="editProfile.nationalCode=false" ng-if="editProfile.nationalCode==true">لغو</span>
+                                <span class="text-warning" ng-click="canEditProfile.nationalCode=true" ng-if="canEditProfile.nationalCode==false">ویرایش</span>
+                                <span class="text-danger" ng-click="canEditProfile.nationalCode=false" ng-if="canEditProfile.nationalCode==true">لغو</span>
                             </label>
                             <br />
-                            <span ng-if="!editProfile.nationalCode">{{user.NationalCode}}</span>
-                            <input ng-model="user.NationalCode" ng-if="editProfile.nationalCode" name="nationalCode" class="form-control" tabindex="4" ng-pattern="/^[0-9]{10}$/" />
+                            <span ng-if="!canEditProfile.nationalCode">{{user.NationalCode}}</span>
+                            <input ng-model="user.NationalCode" ng-if="canEditProfile.nationalCode" name="nationalCode" class="form-control" tabindex="4" ng-pattern="/^[0-9]{10}$/" />
                             <span ng-show="profileForm.nationalCode.$invalid && profileForm.nationalCode.$dirty">
                                 <span ng-show="profileForm.nationalCode.$error.pattern" class="text-danger">کد ملی 10 رقمی می باشد</span>
                             </span>
@@ -99,35 +99,37 @@
                     </ul>
                 </div>
             </div>
+            <br />
+            <button type="button" class="btn btn-primary" ng-click="editProfile()" ng-disabled="profileForm.$invalid" style="margin:15px">ثبت تغییرات</button>
         </form>
     </div>
     <hr />
-    <button type="button" class="btn btn-primary" ng-click="editProfile()" ng-disabled="profileForm.$invalid">ثبت تغییرات</button>
     <div class="row">
-        <h4>عکس های فروشگاه</h4>
-        <hr />
-        <div id="storeImagesCarousel" class="carousel slide" data-ride="carousel">
-
-            <ol class="carousel-indicators">
-                <li ng-repeat="storeImage in user.Store.Images" data-target="#storeImagesCarousel" data-slide-to="{{$index}}" ng-class="{'active':$index==0}"></li>
-            </ol>
-
-
-            <div class="carousel-inner">
-                <div class="item" ng-repeat="storeImage in user.Store.Images" ng-class="{'active' : $index==0}">
-                    <img src="{{storeImage}}" alt="Los Angeles">
+        <div class="col-xs-12">
+            <h4>عکس های فروشگاه</h4>
+            <h5 class="text-danger">(حداکثر 3 عکس می توانید آپلود کنید)</h5>
+            <br />
+            <h5 ng-if="user.Store.Images.length==0" class="text-warning">عکسی موجود نمی باشد</h5>
+            <div ng-if="user.Store.Images.length<3&&user.Store.Images.length!=0">
+                <ng-dropzone class="dropzone" options="dzOptions" callbacks="dzCallbacks" methods="dzMethods"></ng-dropzone>
+                <br />
+                <button ng-click="addStoreImage()" class="btn btn-info" style="margin:10px 0;height:40px">افزودن عکس</button>
+                <hr />
+            </div>
+            <div class="row" ng-if="user.Store.Images.length!=0">
+                <div class="row">
+                    <div class="col-md-4" ng-repeat="storeImage in user.Store.Images">
+                        <div class="thumbnail">
+                            <a href="{{storeImage.Path}}" target="_blank">
+                                <img src="{{storeImage.Path}}" style="height:280px;width:370px">
+                            </a>
+                            <div class="caption text-center">
+                                <button class="btn btn-danger" ng-click="removeStoreImage(storeImage.Id)">حذف عکس</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-
-            <a class="left carousel-control" href="#storeImagesCarousel" data-slide="prev">
-                <span class="glyphicon glyphicon-chevron-left"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="right carousel-control" href="#storeImagesCarousel" data-slide="next">
-                <span class="glyphicon glyphicon-chevron-right"></span>
-                <span class="sr-only">Next</span>
-            </a>
         </div>
     </div>
 </div>

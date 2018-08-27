@@ -56,7 +56,7 @@ app.controller('registerSellerCtrl', function ($scope, NgMap, $http, sellerServi
     }
 
     $scope.dzOptions = {
-        url: '/api/Store/Upload',
+        url: '/api/Store/UploadStoreLogo',
         paramName: 'photo',
         acceptedFiles: 'image/jpeg, images/jpg, image/png',
         addRemoveLinks: true,

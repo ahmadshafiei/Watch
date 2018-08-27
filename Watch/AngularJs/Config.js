@@ -1,6 +1,6 @@
 ﻿var app = angular.module('watch');
 
-app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', 'dropzoneOpsProvider', function ($stateProvider, $urlRouterProvider, $httpProvider, dropzoneOpsProvider) {
+app.config(['$stateProvider', '$httpProvider', function ($stateProvider, $httpProvider) {
 
     $httpProvider.interceptors.push(['$location', '$injector', '$q', '$cookies', function ($location, $injector, $q, $cookies) {
         return {
@@ -48,22 +48,23 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', 'dropzoneOp
         .state('sellerPanel.profile', {
             url: '/Profile',
             templateUrl: '/Statics/SellerPanel/profile.html',
-            controller: 'sellerProfile.controller'
+            controller: 'sellerProfileController'
         })
         .state('sellerPanel.watches', {
             url: '/Watches',
             templateUrl: '/Statics/SellerPanel/watches.html',
-            controller: 'sellerWatches.controller'
+            controller: 'sellerWatchesController'
         })
         .state('sellerPanel.salesHistory', {
             url: '/SalesHistory',
             templateUrl: '/Statics/SellerPanel/salesHistory.html',
-            controller: 'sellerSalesHistory.controller'
+            controller: 'sellerSalesHistoryController'
         });
 
 }]).run(['authenticationService', '$state', '$rootScope', function (authenticationService, $state, $rootScope) {
 
     authenticationService.getCurrentRoles().then(function (response) {
+
         if (response.data.includes('Admin')) {
             $rootScope.role = 'Admin';
             $state.go('adminPanel.registerSeller');
@@ -74,4 +75,4 @@ app.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', 'dropzoneOp
         }
     });
 
-}]);;
+}]);

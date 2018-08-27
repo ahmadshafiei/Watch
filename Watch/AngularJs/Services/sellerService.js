@@ -26,4 +26,12 @@ app.service('sellerService', function ($http) {
         return $http({ method: 'PUT', url: '/Api/Store/UpdateStoreProfile', data: user });
     }
 
+    this.removeStoreImage = function (imageId) {
+        return $http({ method: 'DELETE', url: '/Api/Store/RemoveStoreImage', params: { imageId: imageId } });
+    }
+
+    this.getStoreWatches = function (paginationData) {
+        return $http({ method: 'GET', url: '/Api/Store/GetStoreWatches', params: paginationData });
+    }
+
 });

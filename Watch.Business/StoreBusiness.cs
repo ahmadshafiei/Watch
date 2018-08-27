@@ -17,14 +17,16 @@ namespace Watch.Business
         private readonly SellerRepository sellerRepository;
         private readonly UserRepository userRepository;
         private readonly ImageRepository imageRepository;
+        private readonly WatchBusiness watchBusiness;
         private readonly UnitOfWork unitOfWork;
 
-        public StoreBusiness(SellerRepository sellerRepository, UserRepository userRepository, UnitOfWork unitOfWork, ImageRepository imageRepository)
+        public StoreBusiness(SellerRepository sellerRepository, UserRepository userRepository, UnitOfWork unitOfWork, ImageRepository imageRepository, WatchBusiness watchBusiness)
         {
             this.sellerRepository = sellerRepository;
             this.userRepository = userRepository;
             this.imageRepository = imageRepository;
             this.unitOfWork = unitOfWork;
+            this.watchBusiness = watchBusiness;
         }
 
         public void RegisterSeller(Seller seller)
@@ -154,9 +156,43 @@ namespace Watch.Business
 
         }
 
+        public void RemoveStoreImage(int imageId)
+        {
+            imageRepository.DeleteById(imageId);
+            unitOfWork.Commit();
+        }
+
+        public List<Models.Watch> GetStoreWatches(string username, int? pageNumber, int? pageSize, string searchExp, out int count)
+        {
+            User user = userRepository.Get().Where(u => u.UserName == username).SingleOrDefault();
+
+            if (user == null)
+                throw new NotFoundException("کاربر");
+
+            Seller seller = sellerRepository.Get().Where(s => s.User_Id == user.Id).Include(s => s.Images).SingleOrDefault();
+
+            if (seller == null)
+                throw new NotFoundException("فروشنده");
+
+            return watchBusiness.GetStoreWatches(seller.Id, pageNumber, pageSize, null, out count);
+        }
+
+        public void AddImageToStore(int storeId, string imagePath)
+        {
+            imageRepository.Insert(new Image { SellerId = storeId, Path = imagePath });
+            unitOfWork.Commit();
+        }
+
+        public bool CanSaveImageForStore(int storeId)
+        {
+            //Cant have more than 3 images
+            return imageRepository.GetAll().Where(s => s.SellerId == storeId).Count() < 3;
+        }
+
         public User UpdateStoreProfile(User user)
         {
             userRepository.Update(user);
+            sellerRepository.Update(user.Store);
             unitOfWork.Commit();
             return user;
         }

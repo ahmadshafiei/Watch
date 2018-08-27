@@ -45,22 +45,21 @@ namespace Watch.Api
 
         [Authorize(Roles = "User")]
         [HttpGet]
-        public IResponse GetAllWatchBookmarks()
+        public IResponse GetAllWatchBookmarks(int? pageNumber = null, int? pageSize = null)
         {
             try
             {
                 int userId = userRepository.Get().Where(u => u.UserName == User.Identity.Name).Single().Id;
 
-                PagedResult<int> result = new PagedResult<int>
-                {
-                    Data = bookMarkBusiness.GetAllWatchBookmarks(userId)
-                };
+                PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
 
-                return new Response<int>() { Result = result };
+                result.Data = bookMarkBusiness.GetAllWatchBookmarks(userId, pageNumber, pageSize, out result.Count);
+
+                return new Response<Models.Watch>() { Result = result };
             }
             catch (Exception e)
             {
-                return new Response<int>() { Success = false, Message = e.Message };
+                return new Response<Models.Watch>() { Success = false, Message = e.Message };
             }
         }
 
@@ -88,22 +87,21 @@ namespace Watch.Api
 
         [Authorize(Roles = "User")]
         [HttpGet]
-        public IResponse GetAllStoreBookmarks()
+        public IResponse GetAllStoreBookmarks(int? pageNumber = null, int? pageSize = null)
         {
             try
             {
                 int userId = userRepository.Get().Where(u => u.UserName == User.Identity.Name).Single().Id;
 
-                PagedResult<int> result = new PagedResult<int>
-                {
-                    Data = bookMarkBusiness.GetAllStoreBookmarks(userId)
-                };
+                PagedResult<Seller> result = new PagedResult<Seller>();
 
-                return new Response<int>() { Result = result };
+                result.Data = bookMarkBusiness.GetAllStoreBookmarks(userId, pageNumber, pageSize, out result.Count);
+
+                return new Response<Seller>() { Result = result };
             }
             catch (Exception e)
             {
-                return new Response<int>() { Success = false, Message = e.Message };
+                return new Response<Seller>() { Success = false, Message = e.Message };
             }
         }
     }

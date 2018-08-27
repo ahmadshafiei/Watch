@@ -44,25 +44,9 @@ namespace Watch.Api
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public string Upload()
+        public string UploadStoreLogo()
         {
-            if (!Request.Content.IsMimeMultipartContent())
-                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-            var files = HttpContext.Current.Request.Files;
-            byte[] buffer = new byte[files[0].ContentLength];
-            files[0].InputStream.Read(buffer, 0, buffer.Length);
-
-            Seller seller = new Seller();
-            MemoryStream ms = new MemoryStream(buffer);
-            var mainImg = System.Drawing.Image.FromStream(ms);
-
-            string relPath = "\\Images\\" + Guid.NewGuid().ToString() + ".jpg";
-            string path = "C:\\inetpub\\wwwroot" + relPath;
-            //publish: C:\\inetpub\\wwwroot
-
-            mainImg.Save(path, mainImg.RawFormat);
-            seller.LogoPath = relPath;
-            return relPath;
+            return StoreImageOnDisk();
         }
 
         [Authorize(Roles = "Admin,Seller")]
@@ -180,6 +164,56 @@ namespace Watch.Api
                 }
             };
         }
+
+        [HttpPost]
+        [Authorize]
+        public void UploadStoreImage(int storeId)
+        {
+            if (storeBusiness.CanSaveImageForStore(storeId))
+            {
+                string imagePath = StoreImageOnDisk();
+
+                storeBusiness.AddImageToStore(storeId, imagePath);
+            }
+        }
+
+        [HttpDelete]
+        [Authorize]
+        public void RemoveStoreImage(int imageId)
+        {
+            storeBusiness.RemoveStoreImage(imageId);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Seller")]
+        public IResponse GetStoreWatches(int? pageNumber = null, int? pageSize = null, string searchExp = null)
+        {
+            PagedResult<Models.Watch> watches = new PagedResult<Models.Watch>();
+
+            watches.Data = storeBusiness.GetStoreWatches(User.Identity.Name, pageNumber, pageSize, searchExp, out watches.Count);
+
+            return new Response<Models.Watch> { Result = watches };
+        }
         #endregion
+
+        private string StoreImageOnDisk()
+        {
+            if (!Request.Content.IsMimeMultipartContent())
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+
+            var files = HttpContext.Current.Request.Files;
+            byte[] buffer = new byte[files[0].ContentLength];
+            files[0].InputStream.Read(buffer, 0, buffer.Length);
+
+            MemoryStream ms = new MemoryStream(buffer);
+            var mainImg = System.Drawing.Image.FromStream(ms);
+
+            string relPath = @"/Images/" + Guid.NewGuid().ToString() + ".jpg";
+            string path = AppDomain.CurrentDomain.BaseDirectory + relPath;
+
+            mainImg.Save(path, mainImg.RawFormat);
+
+            return relPath;
+        }
     }
 }
