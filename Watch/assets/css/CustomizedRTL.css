@@ -53,3 +53,20 @@ button[disabled="disabled"] {
         cursor: pointer;
         float: left;
     }
+
+.width60 .ngdialog-content {
+    width: 60% !important;
+}
+
+form[name="watchDetailForm"] .input-group-addon {
+    width: 105px;
+    text-align: right;
+}
+
+form[name="watchDetailForm"] input ,form[name="watchDetailForm"] textarea {
+    text-align: right;
+}
+
+form[name="watchDetailForm"] select {
+    direction: rtl;
+}

@@ -70,7 +70,6 @@ app.controller('sellerProfileController', function ($scope, sellerService, toast
 
         sellerService.getUserProfile().then(function (response) {
             $scope.user = response.data.Result.Data[0];
-            console.log($scope.user);
         });
 
     }

@@ -171,7 +171,7 @@ namespace Watch.Business
 
             int userId = store.User_Id;
 
-            IQueryable<Models.Watch> result = watchRepository.Get().Where(w => w.OwnerUser_Id == userId).Include(w => w.Brand).OrderByDescending(w => w.DateCreated);
+            IQueryable<Models.Watch> result = watchRepository.Get().Where(w => w.OwnerUser_Id == userId).Include(w => w.Brand).OrderByDescending(w => w.DateCreated).AsNoTracking();
 
             if (!string.IsNullOrEmpty(userName))
             {

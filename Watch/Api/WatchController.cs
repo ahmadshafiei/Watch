@@ -461,7 +461,7 @@ namespace Watch.Api
         public IResponse GetPurchaseHistory(int? pageNumber = null, int? pageSize = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
-            
+
             result.Data = watchBusiness.GetPurchaseHistory(pageNumber, pageSize, User.Identity.Name, out result.Count);
 
             return new Response<Models.Watch>
@@ -531,6 +531,30 @@ namespace Watch.Api
                     Message = e.Message
                 };
             }
+        }
+        #endregion
+
+        #region[File Upload]
+        [HttpPost]
+        [Authorize]
+        public string UploadWatchImage(int storeId)
+        {
+            if (!Request.Content.IsMimeMultipartContent())
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+
+            var files = HttpContext.Current.Request.Files;
+            byte[] buffer = new byte[files[0].ContentLength];
+            files[0].InputStream.Read(buffer, 0, buffer.Length);
+
+            MemoryStream ms = new MemoryStream(buffer);
+            var mainImg = System.Drawing.Image.FromStream(ms);
+
+            string relPath = @"/Images/" + Guid.NewGuid().ToString() + ".jpg";
+            string path = AppDomain.CurrentDomain.BaseDirectory + relPath;
+
+            mainImg.Save(path, mainImg.RawFormat);
+
+            return relPath;
         }
         #endregion
     }

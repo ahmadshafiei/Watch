@@ -34,4 +34,20 @@ app.service('sellerService', function ($http) {
         return $http({ method: 'GET', url: '/Api/Store/GetStoreWatches', params: paginationData });
     }
 
+    this.getAllBrands = function () {
+        return $http({ method: 'GET', url: '/Api/Watch/GetAllBrands' });
+    }
+
+    this.editWatch = function (watch) {
+        return $http({ method: 'POST', url: '/Api/Watch/UpdateWatch', data: watch });
+    }
+
+    this.insertWatch = function (watch) {
+        return $http({method:'POST' , url:'/Api/Watch/InsertWatch' , data:watch});
+    }
+
+    this.removeWatch = function (watchId) {
+        return $http({ method: 'GET', url: '/Api/Watch/DeleteWatch?id=' + watchId });
+    }
+
 });

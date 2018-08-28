@@ -2,14 +2,20 @@
     <h3>لیست ساعت ها</h3>
     <hr />
     <div class="row">
-        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6" ng-repeat="watch in watches">
+        <div class="col-md-offset-6 col-md-6 col-sm-offset-6 col-sm-6 col-xs-12">
+            <button class="btn btn-primary" ng-click="openInsertWatchDialog()">افزودن ساعت</button>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-3 col-sm-4 col-xs-6" ng-repeat="watch in watches">
             <div class="card" style="height:500px">
                 <img class="card-img-top" src="{{watch.MainImagePath}}" style="height:250px">
                 <div class="card-body">
                     <h5 class="card-title">{{watch.Name}} <span ng-if="watch.Brand.Name.length!=0">- {{watch.Brand.Name}}</span></h5>
                     <p class="card-text" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{watch.Description}}</p>
                     <p>قیمت : {{watch.Price}}</p>
-                    <a class="btn btn-primary" ng-click="openWatchDetailDialog()" style="color:white;position:absolute;bottom:10px">جزئیات</a>
+                    <a class="btn btn-primary" ng-click="openWatchDetailDialog(watch)" style="color:white;position:absolute;bottom:10px">جزئیات</a>
                 </div>
             </div>
         </div>

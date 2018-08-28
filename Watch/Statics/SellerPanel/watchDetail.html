@@ -1,0 +1,201 @@
+﻿<h3>جزئیات ساعت</h3>
+<hr />
+<div class="row">
+    <div class="col-xs-12">
+        <form name="watchDetailForm" dir="ltr">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <select class="form-control" name="brand" ng-model="watch.Brand.Id" ng-options="brand.Id as brand.Name for brand in brands" required>
+                            <option value="">-- انتخاب برند --</option>
+                        </select>
+                        <span class="input-group-addon">برند <span class="text-danger">*</span></span>
+                        <span ng-show="watchDetailForm.price.$invalid && watchDetailForm.price.$dirty">
+                            <span ng-show="watchDetailForm.price.$error.required" class="text-danger">برند مورد نظر را انتخاب کنید</span>
+                        </span>
+                    </div>
+                </div>
+                <br />
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <input class="form-control" name="name" ng-model="watch.Name" />
+                        <span class="input-group-addon">نام</span>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <input class="form-control" ng-model="watch.Watch24Id" />
+                        <span class="input-group-addon">Watch24Id</span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <input class="form-control" ng-model="watch.RefNo" />
+                        <span class="input-group-addon">RefNo</span>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <input class="form-control" ng-model="watch.BraceletMaterial" />
+                        <span class="input-group-addon">جنس بند</span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <input class="form-control" ng-model="watch.CaseMaterial" />
+                        <span class="input-group-addon">جنس محفظه</span>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <input class="form-control" ng-model="watch.Year" />
+                        <span class="input-group-addon">سال تولید</span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <input class="form-control" name="price" ng-model="watch.Price" ng-pattern="/^[0-9]*$/" />
+                        <span class="input-group-addon">قیمت به تومان</span>
+                        <span ng-show="watchDetailForm.price.$invalid && watchDetailForm.price.$dirty">
+                            <span ng-show="watchDetailForm.price.$error.pattern" class="text-danger">قیمت ساعت به صورت رقم می باشد</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <input class="form-control" ng-model="watch.Quantity" ng-disabled="!watch.IsAvailable" ng-readonly="!watch.IsAvailable" />
+                        <span class="input-group-addon">تعداد موجودی</span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group" dir="rtl">
+                        <div class="checkbox">
+                            <label>موجودی <input type="checkbox" ng-model="watch.IsAvailable" ng-change="watch.IsAvailable == false ? watch.Quantity=0 : watch.Quantity=1"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <select class="form-control" name="gender" ng-model="watch.Gender" required>
+                            <option value="">-- انتخاب جنسیت --</option>
+                            <option value="0">مردانه</option>
+                            <option value="1">زنانه</option>
+                            <option value="2">هر دو</option>
+                        </select>
+                        <span class="input-group-addon">جنسیت <span class="text-danger">*</span></span>
+                        <span ng-show="watchDetailForm.gender.$invalid && watchDetailForm.gender.$dirty">
+                            <span ng-show="watchDetailForm.gender.$error.required" class="text-danger">جنسیت مورد نظر را انتخاب کنید</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group" dir="rtl">
+                        <div class="checkbox">
+                            <label>پیشنهاد قیمت توسط مشتری <input type="checkbox" ng-model="watch.SuggestPrice"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <select class="form-control" name="counterMovement" ng-model="watch.CounterMovement">
+                            <option value="">-- انتخاب کنید --</option>
+                            <option value="2">دیجیتال</option>
+                            <option value="1">مکانیکی</option>
+                            <option value="0">کوارتز</option>
+                        </select>
+                        <span class="input-group-addon">نوع عقربه ها</span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <select class="form-control" name="condition" ng-model="watch.Condition" required>
+                            <option value="0">-- انتخاب وضعیت --</option>
+                            <option value="1">نو</option>
+                            <option value="2">دسته دوم</option>
+                            <option value="3">دسته سوم</option>
+                            <option value="4">دسته چهارم</option>
+                            <option value="5">دسته پنجم</option>
+                            <option value="6">دسته ششم</option>
+                            <option value="7">دسته هفتم</option>
+                        </select>
+                        <span class="input-group-addon">وضعیت <span class="text-danger">*</span></span>
+                        <span ng-show="watchDetailForm.gender.$invalid && watchDetailForm.gender.$dirty">
+                            <span ng-show="watchDetailForm.gender.$error.required" class="text-danger">وضعیت ساعت مورد نظر را انتخاب کنید</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-offset-6 col-md-6 col-sm-12">
+                    <div class="input-group" dir="rtl">
+                        <div class="checkbox">
+                            <label>دارای بسته بندی <input type="checkbox" ng-model="watch.IsBoxed"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <input class="form-control" ng-model="watch.MinDeliveryTime" />
+                        <span class="input-group-addon">حداقل زمان تحویل</span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="input-group">
+                        <input class="form-control" ng-model="watch.MaxDeliveryTime" />
+                        <span class="input-group-addon">حداکثر زمان تحویل</span>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-offset-6 col-md-6 col-sm-12 col-xs-12">
+                    <div class="input-group">
+                        <textarea class="form-control" ng-model="watch.Description" placeholder="توضیحات ...">
+                    </textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row" dir="rtl">
+                <div class="col-md-6 col-sm-12">
+                    <ng-dropzone class="dropzone" options="dzOptions" callbacks="dzCallbacks" methods="dzMethods"></ng-dropzone>
+                </div>
+                <div class="col-md-6 col-sm-12" ng-if="watch.MainImagePath.length!=0">
+                    <img class="img-responsive img-thumbnail" src="{{watch.MainImagePath}}" />
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-offset-6 col-md-6 col-sm-12" ng-if="mode=='edit'">
+                    <button style="width:85px" class="btn btn-warning" ng-click="closeDialog()">خروج</button>
+                    <button style="width:85px" class="btn btn-danger" ng-click="removeWatch(watch.Id)">حذف ساعت</button>
+                    <button style="width:85px" class="btn btn-success" ng-click="editWatch(watch)" ng-disabled="watchDetailForm.$invalid">ثبت تغییرات</button>
+                </div>
+                <div class="col-md-offset-6 col-md-6 col-sm-12" ng-if="mode=='insert'">
+                    <button class="btn btn-success" ng-click="insertWatch(watch)" ng-disabled="watchDetailForm.$invalid">ایحاد</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
