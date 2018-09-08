@@ -29,10 +29,8 @@ namespace Watch.Models
         public bool IsBoxed { get; set; }
         //Determines if user can suggest price on this particular watch
         public bool SuggestPrice { get; set; }
-        [DefaultValue(1)]
-        public int MinDeliveryTime { get; set; }
-        [DefaultValue(1)]
-        public int MaxDeliveryTime { get; set; }
+        public string MinDeliveryTime { get; set; }
+        public string MaxDeliveryTime { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string RefNo { get; set; }
@@ -42,7 +40,7 @@ namespace Watch.Models
         public string MainImagePath { get; set; }
         public Gender Gender { get; set; }
         public Movement? CounterMovement { get; set; }
-        public Condition Condition { get; set; }
+        public Condition? Condition { get; set; }
         public string Year { get; set; }
         public DateTime DateCreated { get; set; }
         public int? Brand_Id { get; set; }

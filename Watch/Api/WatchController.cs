@@ -40,7 +40,7 @@ namespace Watch.Api
             {
                 User user = await userManager.FindByNameAsync(User.Identity.Name);
                 watch.OwnerUser_Id = user.Id;
-                watchBusiness.InsertWatch(watch, watch.MainImage, watch.SubImages);
+                watchBusiness.InsertWatch(watch);
                 return new Response<Models.Watch>();
             }
             catch (Exception e)
@@ -537,7 +537,7 @@ namespace Watch.Api
         #region[File Upload]
         [HttpPost]
         [Authorize]
-        public string UploadWatchImage(int storeId)
+        public string UploadWatchImage()
         {
             if (!Request.Content.IsMimeMultipartContent())
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);

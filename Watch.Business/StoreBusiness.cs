@@ -177,6 +177,12 @@ namespace Watch.Business
             return watchBusiness.GetStoreWatches(seller.Id, pageNumber, pageSize, null, out count);
         }
 
+        public void RemoveWatchImage(int imageId)
+        {
+            imageRepository.DeleteById(imageId);
+            unitOfWork.Commit();
+        }
+
         public void AddImageToStore(int storeId, string imagePath)
         {
             imageRepository.Insert(new Image { SellerId = storeId, Path = imagePath });

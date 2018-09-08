@@ -43,11 +43,15 @@ app.service('sellerService', function ($http) {
     }
 
     this.insertWatch = function (watch) {
-        return $http({method:'POST' , url:'/Api/Watch/InsertWatch' , data:watch});
+        return $http({ method: 'POST', url: '/Api/Watch/InsertWatch', data: watch });
     }
 
     this.removeWatch = function (watchId) {
         return $http({ method: 'GET', url: '/Api/Watch/DeleteWatch?id=' + watchId });
+    }
+
+    this.removeWatchImage = function (imageId) {
+        return $http({ method: 'DELETE', url: '/Api/Store/RemoveWatchImage', params: { imageId: imageId } });
     }
 
 });

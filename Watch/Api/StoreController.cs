@@ -194,6 +194,13 @@ namespace Watch.Api
 
             return new Response<Models.Watch> { Result = watches };
         }
+
+        [HttpDelete]
+        [Authorize]
+        public void RemoveWatchImage(int imageId)
+        {
+            storeBusiness.RemoveWatchImage(imageId);
+        }
         #endregion
 
         private string StoreImageOnDisk()

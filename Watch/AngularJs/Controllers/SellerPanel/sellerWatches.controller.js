@@ -20,8 +20,8 @@ app.controller('sellerWatchesController', function ($scope, $cookies, ngDialog, 
     }
 
     $scope.openWatchDetailDialog = function (watch) {
-        $scope.watch = watch;
 
+        $scope.watch = watch;
         $scope.watch.Gender = $scope.watch.Gender.toString();
         $scope.watch.Condition = $scope.watch.Condition.toString();
         if ($scope.watch.CounterMovement != null && $scope.watch.CounterMovement != undefined)
@@ -40,10 +40,8 @@ app.controller('sellerWatchesController', function ($scope, $cookies, ngDialog, 
     }
 
     $scope.openInsertWatchDialog = function () {
-
+        $scope.watch = {};
         $scope.mode = 'insert';
-
-        $scope.watch = { Condition: 0 };
 
         getAllBrands();
 
@@ -61,12 +59,6 @@ app.controller('sellerWatchesController', function ($scope, $cookies, ngDialog, 
 
     $scope.insertWatch = function (watch) {
 
-        watch.BrandId = watch.Brand.Id;
-
-        delete watch.Brand;
-
-        console.log(watch);
-
         sellerService.insertWatch(watch).then(function (response) {
             getStoreWatches();
             toaster.pop('success', 'ساعت مورد نظر با موفقیت افزوده شد');
@@ -77,9 +69,9 @@ app.controller('sellerWatchesController', function ($scope, $cookies, ngDialog, 
         });
     }
 
-    $scope.editWatch = function (watch) {
+    $scope.editWatch = function () {
 
-        sellerService.editWatch(watch).then(function (response) {
+        sellerService.editWatch($scope.watch).then(function (response) {
             getStoreWatches();
             toaster.pop('success', 'ساعت مورد نظر با موفقیت ویرایش شد');
             $scope.closeDialog();
@@ -87,7 +79,6 @@ app.controller('sellerWatchesController', function ($scope, $cookies, ngDialog, 
             toaster.pop('error', 'خطا در برقراری ارتباط با سرور');
             $scope.closeDialog();
         });
-
 
     }
 
@@ -105,7 +96,7 @@ app.controller('sellerWatchesController', function ($scope, $cookies, ngDialog, 
     }
 
     $scope.dzOptions = {
-        url: '/api/Watch/UploadWatchImage',
+        url: '/Api/Watch/UploadWatchImage',
         paramName: 'photo',
         dictDefaultMessage: 'عکس ساعت را انتخاب کنید',
         acceptedFiles: 'image/jpeg, images/jpg, image/png',
@@ -113,11 +104,14 @@ app.controller('sellerWatchesController', function ($scope, $cookies, ngDialog, 
         autoProcessQueue: false,
         maxFiles: 1,
         init: function () {
-            myDropzone = this;
+            mainImageDropzone = this;
 
             $scope.addWatchImage = function () {
-                myDropzone.processQueue();
+                mainImageDropzone.processQueue();
+                if (mainImageDropzone.files.length == 0)
+                    $scope.addWatchImages();
             }
+
         }
     }
 
@@ -126,9 +120,10 @@ app.controller('sellerWatchesController', function ($scope, $cookies, ngDialog, 
             $scope.newFile = file;
         },
         'success': function (response) {
-            console.log(response);
-            $scope.watch.MainImagePath = response.data;
-            $scope.insertWatch($scope.watch);
+            $scope.watch.MainImagePath = response.xhr.response.replace('"', '').replace('"', '');
+        },
+        'queuecomplete': function () {
+            $scope.addWatchImages();
         }
     };
 
@@ -136,6 +131,54 @@ app.controller('sellerWatchesController', function ($scope, $cookies, ngDialog, 
 
     $scope.removeNewFile = function () {
         $scope.dzMethods.removeFile($scope.newFile);
+    }
+
+    $scope.imagesDzOptions = {
+        url: '/Api/Watch/UploadWatchImage',
+        paramName: 'photo',
+        dictDefaultMessage: 'عکس ساعت را انتخاب کنید',
+        acceptedFiles: 'image/jpeg, images/jpg, image/png',
+        addRemoveLinks: true,
+        autoProcessQueue: false,
+        maxFiles: 10,
+        init: function () {
+            imagesDropzone = this;
+
+            $scope.addWatchImages = function () {
+                imagesDropzone.processQueue();
+                if (imagesDropzone.files.length == 0)
+                    insertEditWatch();
+            }
+        }
+    }
+
+    $scope.imagesDzCallbacks = {
+        'addedfile': function (file) {
+            $scope.newFile = file;
+        },
+        'success': function (response) {
+            if ($scope.watch.Images == undefined)
+                $scope.watch.Images = [];
+            $scope.watch.Images.push({ WatchId: $scope.watch.Id, path: response.xhr.response.replace('"', '').replace('"', '') });
+        },
+        'queuecomplete': function () {
+            insertEditWatch();
+        }
+    };
+
+    $scope.imagesDzMethods = {};
+
+    $scope.imagesRemoveNewFile = function () {
+        $scope.dzMethods.removeFile($scope.newFile);
+    }
+
+    $scope.removeWatchImage = function (imageId) {
+        sellerService.removeWatchImage(imageId).then(function (response) {
+            $scope.watch.Images = $scope.watch.Images.filter(i => i.Id != imageId);
+            toaster.pop('success', 'عکس مورد نظر حذف شد');
+        }, function (error) {
+            toaster.pop('error', 'خطا در برقراری ارتباط با سرور');
+        });
     }
 
     function getStoreWatches() {
@@ -153,6 +196,14 @@ app.controller('sellerWatchesController', function ($scope, $cookies, ngDialog, 
         sellerService.getAllBrands().then(function (response) {
             $scope.brands = response.data.Result.Data;
         });
+    }
+
+    function insertEditWatch() {
+        console.log($scope.watch);
+        if ($scope.mode == 'insert')
+            $scope.insertWatch($scope.watch);
+        else if ($scope.mode == 'edit')
+            $scope.editWatch();
     }
 
 });

@@ -34,6 +34,12 @@ namespace Watch.Business
 
         #region [WATHC-CRUD]
 
+        public void InsertWatch(Models.Watch watch)
+        {
+            watchRepository.Insert(watch);
+            unitOfWork.Commit();
+        }
+
         public void InsertWatch(Models.Watch watch, byte[] mainImage, List<byte[]> images)
         {
             watch.MainImagePath = Utility.Image.Save(mainImage);
@@ -47,8 +53,7 @@ namespace Watch.Business
                     });
                 }
 
-            watchRepository.Insert(watch);
-            unitOfWork.Commit();
+            InsertWatch(watch);
         }
 
         public void DeleteWatch(int id)
@@ -67,6 +72,7 @@ namespace Watch.Business
                 throw new NotFoundException("ساعت");
 
             watchRepository.Update(watch);
+
             unitOfWork.Commit();
         }
 
@@ -171,7 +177,7 @@ namespace Watch.Business
 
             int userId = store.User_Id;
 
-            IQueryable<Models.Watch> result = watchRepository.Get().Where(w => w.OwnerUser_Id == userId).Include(w => w.Brand).OrderByDescending(w => w.DateCreated).AsNoTracking();
+            IQueryable<Models.Watch> result = watchRepository.Get().Where(w => w.OwnerUser_Id == userId).Include(w => w.Images).Include(w => w.Brand).OrderByDescending(w => w.DateCreated).AsNoTracking();
 
             if (!string.IsNullOrEmpty(userName))
             {
@@ -190,6 +196,11 @@ namespace Watch.Business
 
             return result.ToList();
 
+        }
+
+        public Models.Watch GetById(int watchId)
+        {
+            return watchRepository.GetById(watchId);
         }
 
         public List<Models.Watch> GetStoreBestWatches(int storeId, int? pageNumber, int? pageSize, string userName, out int count)

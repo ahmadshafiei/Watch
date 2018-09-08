@@ -2,17 +2,14 @@
 <hr />
 <div class="row">
     <div class="col-xs-12">
-        <form name="watchDetailForm" dir="ltr">
+        <form name="watchDetailForm" dir="ltr" novalidate>
             <div class="row">
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
-                        <select class="form-control" name="brand" ng-model="watch.Brand.Id" ng-options="brand.Id as brand.Name for brand in brands" required>
+                        <select class="form-control" name="brand" ng-model="watch.Brand_Id" ng-options="brand.Id as brand.Name for brand in brands">
                             <option value="">-- انتخاب برند --</option>
                         </select>
-                        <span class="input-group-addon">برند <span class="text-danger">*</span></span>
-                        <span ng-show="watchDetailForm.price.$invalid && watchDetailForm.price.$dirty">
-                            <span ng-show="watchDetailForm.price.$error.required" class="text-danger">برند مورد نظر را انتخاب کنید</span>
-                        </span>
+                        <span class="input-group-addon">برند</span>
                     </div>
                 </div>
                 <br />
@@ -127,7 +124,7 @@
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
                         <select class="form-control" name="condition" ng-model="watch.Condition" required>
-                            <option value="0">-- انتخاب وضعیت --</option>
+                            <option value="">-- انتخاب وضعیت --</option>
                             <option value="1">نو</option>
                             <option value="2">دسته دوم</option>
                             <option value="3">دسته سوم</option>
@@ -177,12 +174,37 @@
                     </div>
                 </div>
             </div>
+            <br />
             <div class="row" dir="rtl">
                 <div class="col-md-6 col-sm-12">
-                    <ng-dropzone class="dropzone" options="dzOptions" callbacks="dzCallbacks" methods="dzMethods"></ng-dropzone>
+                    <ng-dropzone class="dropzone" options="dzOptions" callbacks="dzCallbacks" methods="dzMethods" style="height:250px"></ng-dropzone>
                 </div>
-                <div class="col-md-6 col-sm-12" ng-if="watch.MainImagePath.length!=0">
-                    <img class="img-responsive img-thumbnail" src="{{watch.MainImagePath}}" />
+                <div class="col-md-6 col-sm-12" ng-if="watch.MainImagePath.length!=null">
+                    <img class="img-responsive img-thumbnail" src="{{watch.MainImagePath}}" style="height:250px" />
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-6 col-md-offset-6 col-sm-12">
+                    <ng-dropzone class="dropzone" options="imagesDzOptions" callbacks="imagesDzCallbacks" methods="imagesDzMethods"></ng-dropzone>
+                </div>
+            </div>
+            <br />
+            <div ng-if="watch.Images.length!=null">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h3>گالری عکس های ساعت</h3>
+                    </div>
+                </div>
+                <hr />
+                <div class="row" dir="rtl">
+                    <div class="col-md-3 col-sm-6 text-center" ng-repeat="img in watch.Images">
+                        <a target="_blank" href="{{img.Path}}">
+                            <img class="img-responsive img-thumbnail" src="{{img.Path}}" />
+                        </a>
+                        <br />
+                        <i class="fa fa-times fa-2x text-danger" style="cursor:pointer" ng-click="removeWatchImage(img.Id)"></i>
+                    </div>
                 </div>
             </div>
             <br />
@@ -190,10 +212,10 @@
                 <div class="col-md-offset-6 col-md-6 col-sm-12" ng-if="mode=='edit'">
                     <button style="width:85px" class="btn btn-warning" ng-click="closeDialog()">خروج</button>
                     <button style="width:85px" class="btn btn-danger" ng-click="removeWatch(watch.Id)">حذف ساعت</button>
-                    <button style="width:85px" class="btn btn-success" ng-click="editWatch(watch)" ng-disabled="watchDetailForm.$invalid">ثبت تغییرات</button>
+                    <button style="width:85px" class="btn btn-success" ng-click="addWatchImage()" ng-disabled="watchDetailForm.$invalid">ثبت تغییرات</button>
                 </div>
                 <div class="col-md-offset-6 col-md-6 col-sm-12" ng-if="mode=='insert'">
-                    <button class="btn btn-success" ng-click="insertWatch(watch)" ng-disabled="watchDetailForm.$invalid">ایحاد</button>
+                    <button class="btn btn-success" ng-click="addWatchImage()" ng-disabled="watchDetailForm.$invalid">ایحاد</button>
                 </div>
             </div>
         </form>
