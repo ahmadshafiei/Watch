@@ -10,7 +10,8 @@
     <div class="row">
         <div class="col-md-3 col-sm-4 col-xs-6" ng-repeat="watch in watches">
             <div class="card" style="height:500px">
-                <img class="card-img-top" src="{{watch.MainImagePath}}" style="height:250px">
+                <img class="card-img-top" src="{{watch.MainImagePath}}" style="height:250px" ng-if="watch.MainImagePath!=null">
+                <img class="card-img-top" src="../../assets/images/NoImage.png" style="height:250px" ng-if="watch.MainImagePath==null" />
                 <div class="card-body">
                     <h5 class="card-title">{{watch.Name}} <span ng-if="watch.Brand.Name.length!=0">- {{watch.Brand.Name}}</span></h5>
                     <p class="card-text" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{watch.Description}}</p>

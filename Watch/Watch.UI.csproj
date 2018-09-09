@@ -251,6 +251,7 @@
     <Content Include="assets\images\crypto-currencies\litecoin.svg" />
     <Content Include="assets\images\crypto-currencies\nem.svg" />
     <Content Include="assets\images\crypto-currencies\ripple.svg" />
+    <Content Include="assets\images\NoImage.png" />
     <Content Include="assets\js\angular\angular-cookies.js" />
     <Content Include="assets\js\angular\angular-cookies.min.js" />
     <Content Include="assets\js\core.js" />

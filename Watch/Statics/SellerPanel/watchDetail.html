@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
-                        <select class="form-control" name="brand" ng-model="watch.Brand_Id" ng-options="brand.Id as brand.Name for brand in brands">
+                        <select class="form-control" name="brand" ng-model="watch.Brand_Id" ng-options="brand.Id as brand.Name for brand in brands" tabindex="2">
                             <option value="">-- انتخاب برند --</option>
                         </select>
                         <span class="input-group-addon">برند</span>
@@ -15,7 +15,7 @@
                 <br />
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
-                        <input class="form-control" name="name" ng-model="watch.Name" />
+                        <input class="form-control" name="name" ng-model="watch.Name" tabindex="1" />
                         <span class="input-group-addon">نام</span>
                     </div>
                 </div>
@@ -24,13 +24,13 @@
             <div class="row">
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
-                        <input class="form-control" ng-model="watch.Watch24Id" />
+                        <input class="form-control" ng-model="watch.Watch24Id" tabindex="4" />
                         <span class="input-group-addon">Watch24Id</span>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
-                        <input class="form-control" ng-model="watch.RefNo" />
+                        <input class="form-control" ng-model="watch.RefNo" tabindex="3" />
                         <span class="input-group-addon">RefNo</span>
                     </div>
                 </div>
@@ -39,13 +39,13 @@
             <div class="row">
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
-                        <input class="form-control" ng-model="watch.BraceletMaterial" />
+                        <input class="form-control" ng-model="watch.BraceletMaterial" tabindex="6" />
                         <span class="input-group-addon">جنس بند</span>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
-                        <input class="form-control" ng-model="watch.CaseMaterial" />
+                        <input class="form-control" ng-model="watch.CaseMaterial" tabindex="5" />
                         <span class="input-group-addon">جنس محفظه</span>
                     </div>
                 </div>
@@ -54,13 +54,13 @@
             <div class="row">
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
-                        <input class="form-control" ng-model="watch.Year" />
+                        <input class="form-control" ng-model="watch.Year" tabindex="8" />
                         <span class="input-group-addon">سال تولید</span>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
-                        <input class="form-control" name="price" ng-model="watch.Price" ng-pattern="/^[0-9]*$/" />
+                        <input class="form-control" name="price" ng-model="watch.Price" ng-pattern="/^[0-9]*$/" tabindex="7" />
                         <span class="input-group-addon">قیمت به تومان</span>
                         <span ng-show="watchDetailForm.price.$invalid && watchDetailForm.price.$dirty">
                             <span ng-show="watchDetailForm.price.$error.pattern" class="text-danger">قیمت ساعت به صورت رقم می باشد</span>
@@ -72,14 +72,14 @@
             <div class="row">
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
-                        <input class="form-control" ng-model="watch.Quantity" ng-disabled="!watch.IsAvailable" ng-readonly="!watch.IsAvailable" />
+                        <input class="form-control" ng-model="watch.Quantity" ng-disabled="!watch.IsAvailable" ng-readonly="!watch.IsAvailable" tabindex="10" />
                         <span class="input-group-addon">تعداد موجودی</span>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group" dir="rtl">
                         <div class="checkbox">
-                            <label>موجودی <input type="checkbox" ng-model="watch.IsAvailable" ng-change="watch.IsAvailable == false ? watch.Quantity=0 : watch.Quantity=1"></label>
+                            <label>موجودی <input type="checkbox" ng-model="watch.IsAvailable" ng-change="watch.IsAvailable == false ? watch.Quantity=0 : watch.Quantity=1" tabindex="9" /></label>
                         </div>
                     </div>
                 </div>
@@ -88,7 +88,7 @@
             <div class="row">
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
-                        <select class="form-control" name="gender" ng-model="watch.Gender" required>
+                        <select class="form-control" name="gender" ng-model="watch.Gender" required tabindex="12">
                             <option value="">-- انتخاب جنسیت --</option>
                             <option value="0">مردانه</option>
                             <option value="1">زنانه</option>
@@ -103,7 +103,7 @@
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group" dir="rtl">
                         <div class="checkbox">
-                            <label>پیشنهاد قیمت توسط مشتری <input type="checkbox" ng-model="watch.SuggestPrice"></label>
+                            <label>پیشنهاد قیمت توسط مشتری <input type="checkbox" ng-model="watch.SuggestPrice" tabindex="11" /></label>
                         </div>
                     </div>
                 </div>
@@ -112,7 +112,7 @@
             <div class="row">
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
-                        <select class="form-control" name="counterMovement" ng-model="watch.CounterMovement">
+                        <select class="form-control" name="counterMovement" ng-model="watch.CounterMovement" tabindex="14">
                             <option value="">-- انتخاب کنید --</option>
                             <option value="2">دیجیتال</option>
                             <option value="1">مکانیکی</option>
@@ -123,7 +123,7 @@
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
-                        <select class="form-control" name="condition" ng-model="watch.Condition" required>
+                        <select class="form-control" name="condition" ng-model="watch.Condition" required tabindex="13">
                             <option value="">-- انتخاب وضعیت --</option>
                             <option value="1">نو</option>
                             <option value="2">دسته دوم</option>
@@ -145,7 +145,7 @@
                 <div class="col-md-offset-6 col-md-6 col-sm-12">
                     <div class="input-group" dir="rtl">
                         <div class="checkbox">
-                            <label>دارای بسته بندی <input type="checkbox" ng-model="watch.IsBoxed"></label>
+                            <label>دارای بسته بندی <input type="checkbox" ng-model="watch.IsBoxed" tabindex="15" /></label>
                         </div>
                     </div>
                 </div>
@@ -154,14 +154,14 @@
             <div class="row">
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
-                        <input class="form-control" ng-model="watch.MinDeliveryTime" />
-                        <span class="input-group-addon">حداقل زمان تحویل</span>
+                        <input class="form-control" ng-model="watch.MaxDeliveryTime" tabindex="17" />
+                        <span class="input-group-addon">حداکثر زمان تحویل</span>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <div class="input-group">
-                        <input class="form-control" ng-model="watch.MaxDeliveryTime" />
-                        <span class="input-group-addon">حداکثر زمان تحویل</span>
+                        <input class="form-control" ng-model="watch.MinDeliveryTime" tabindex="16" />
+                        <span class="input-group-addon">حداقل زمان تحویل</span>
                     </div>
                 </div>
             </div>
@@ -169,7 +169,7 @@
             <div class="row">
                 <div class="col-md-offset-6 col-md-6 col-sm-12 col-xs-12">
                     <div class="input-group">
-                        <textarea class="form-control" ng-model="watch.Description" placeholder="توضیحات ...">
+                        <textarea class="form-control" ng-model="watch.Description" placeholder="توضیحات ..." tabindex="18">
                     </textarea>
                     </div>
                 </div>
@@ -177,10 +177,10 @@
             <br />
             <div class="row" dir="rtl">
                 <div class="col-md-6 col-sm-12">
-                    <ng-dropzone class="dropzone" options="dzOptions" callbacks="dzCallbacks" methods="dzMethods" style="height:250px"></ng-dropzone>
+                    <ng-dropzone class="dropzone" options="dzOptions" callbacks="dzCallbacks" methods="dzMethods"></ng-dropzone>
                 </div>
-                <div class="col-md-6 col-sm-12" ng-if="watch.MainImagePath.length!=null">
-                    <img class="img-responsive img-thumbnail" src="{{watch.MainImagePath}}" style="height:250px" />
+                <div class="col-md-6 col-sm-12">
+                    <img class="img-responsive img-thumbnail" src="{{watch.MainImagePath}}" ng-if="watch.MainImagePath!=null" />
                 </div>
             </div>
             <br />
@@ -190,7 +190,7 @@
                 </div>
             </div>
             <br />
-            <div ng-if="watch.Images.length!=null">
+            <div ng-if="watch.Images.length!=0">
                 <div class="row">
                     <div class="col-xs-12">
                         <h3>گالری عکس های ساعت</h3>

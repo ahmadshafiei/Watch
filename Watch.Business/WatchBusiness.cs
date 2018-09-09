@@ -19,17 +19,22 @@ namespace Watch.Business
         private readonly SellerRepository sellerRepository;
         private readonly SuggestPriceRepository suggestPriceRepository;
         private readonly UserRepository userRepository;
+        private readonly ImageRepository imageRepository;
+        private readonly RequestRepository requestRepository;
+        private readonly WatchBookmarkRepository watchBookmarkRepository;
 
-        public WatchBusiness(BrandRepository brandRepository, WatchRepository watchRepository, WatchBookmarkRepository bookmarkRepository, SellerRepository sellerRepository, SuggestPriceRepository suggestPriceRepository, UserRepository userRepository, UnitOfWork unitOfWork)
+        public WatchBusiness(BrandRepository brandRepository, WatchRepository watchRepository, WatchBookmarkRepository bookmarkRepository, SellerRepository sellerRepository, SuggestPriceRepository suggestPriceRepository, UserRepository userRepository, ImageRepository imageRepository, WatchBookmarkRepository watchBookmarkRepository, RequestRepository requestRepository, UnitOfWork unitOfWork)
         {
             this.watchRepository = watchRepository;
             this.bookmarkRepository = bookmarkRepository;
             this.brandRepository = brandRepository;
             this.unitOfWork = unitOfWork;
-
+            this.imageRepository = imageRepository;
             this.sellerRepository = sellerRepository;
             this.suggestPriceRepository = suggestPriceRepository;
             this.userRepository = userRepository;
+            this.requestRepository = requestRepository;
+            this.watchBookmarkRepository = watchBookmarkRepository;
         }
 
         #region [WATHC-CRUD]
@@ -62,8 +67,34 @@ namespace Watch.Business
             if (watch == null)
                 throw new NotFoundException("ساعت");
 
+            DeleteWatchImages(watch);
+            DeleteWatchBookmarks(watch);
+            DeleteWatchRequests(watch);
+            DeleteWatchSuggestedPrices(watch);
+
             watchRepository.Delete(watch);
+
             unitOfWork.Commit();
+        }
+
+        private void DeleteWatchImages(Models.Watch watch)
+        {
+            imageRepository.Get().Where(i => i.WatchId == watch.Id).Select(i => i.Id).ToList().ForEach(imageId => imageRepository.DeleteById(imageId));
+        }
+
+        private void DeleteWatchBookmarks(Models.Watch watch)
+        {
+            watchBookmarkRepository.Get().Where(i => i.Watch_Id == watch.Id).Select(wb => wb.Id).ToList().ForEach(bookmarkId => watchBookmarkRepository.DeleteById(bookmarkId));
+        }
+
+        private void DeleteWatchRequests(Models.Watch watch)
+        {
+            requestRepository.Get().Where(r => r.Watch_Id == watch.Id).Select(r => r.Id).ToList().ForEach(requestId => requestRepository.DeleteById(requestId));
+        }
+
+        private void DeleteWatchSuggestedPrices(Models.Watch watch)
+        {
+            suggestPriceRepository.Get().Where(sp => sp.Watch_Id == watch.Id).Select(sp => sp.Id).ToList().ForEach(suggestPriceId => suggestPriceRepository.DeleteById(suggestPriceId));
         }
 
         public void UpdateWatch(Models.Watch watch)
@@ -71,9 +102,18 @@ namespace Watch.Business
             if (!watchRepository.Get().Any(w => w.Id == watch.Id))
                 throw new NotFoundException("ساعت");
 
+            UpdateWatchImages(watch);
+
             watchRepository.Update(watch);
 
             unitOfWork.Commit();
+        }
+
+        private void UpdateWatchImages(Models.Watch watch)
+        {
+            foreach (Image image in watch.Images)
+                if (image.Id == 0)
+                    imageRepository.Insert(image);
         }
 
         public List<Models.Watch> GetUserWatches(int? pageNumber, int? pageSize, string searchExp, string username, out int count)
