@@ -20,7 +20,6 @@ namespace Watch.DataAccess
         public DbSet<Seller> Sellers { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Address> Addresses { get; set; }
-        public DbSet<Store> Stores { get; set; }
         public DbSet<SuggestPrice> SuggestedPrices { get; set; }
         public DbSet<StoreBookmark> StoreBookmarks { get; set; }
 

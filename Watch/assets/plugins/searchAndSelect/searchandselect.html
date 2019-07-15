@@ -1,0 +1,22 @@
+﻿<div class="searchandselect" ng-class="{ active: showList }">
+    <div class="header" ng-click="show()">
+        <b>{{selecteditem[key]}}</b>
+        <span class="pull-right fe" ng:class="{true:'fe-chevron-up', false:'fe-chevron-down'}[showList]"></span>
+    </div>
+    <div class="search">
+        <div class="input-group" style="direction:ltr">
+            <input type="text" class="form-control" ng-model="searchKey" placeholder="حداقل 3 کارکتر برای جستجو وارد کنید ..." ng-change="textChanged(searchKey)" />
+            <button class="input-group-addon" type="button" style="width:auto"><i class="fe fe-search"></i></button>
+        </div>
+        <div class="text-right nomargin nopadding" ng-if="userCount!=0"><small>نمایش {{values.length}} کاربر از {{totalrecords}} کاربر.</small></div>
+    </div>
+    <ul class="dropdown">
+        <li ng-repeat="item in values" ng-click="selectItem(item)" ng-if="values.length > 0">
+            <span>{{item[key]}}</span>
+            <i class="fe fe-check" ng-show="isActive(item)"></i>
+        </li>
+        <li ng-if="values.length == 0">
+            کاربری یافت نشد
+        </li>
+    </ul>
+</div>

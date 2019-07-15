@@ -11,11 +11,14 @@ namespace Watch.Business.Utility
     {
         public static string Save(byte[] image)
         {
+            if (image == null || image.Count() == 0)
+                return null;
             MemoryStream ms = new MemoryStream(image);
             var mainImg = System.Drawing.Image.FromStream(ms);
 
-            string relPath = "WatchImages/" + Guid.NewGuid().ToString() + ".jpg";
-            string absPath = "c:/inetpub/wwwroot" + relPath;
+
+            string relPath = "\\Images\\" + Guid.NewGuid().ToString() + ".jpg";
+            string absPath = "C:\\inetpub\\wwwroot" + relPath;
 
             mainImg.Save(absPath, mainImg.RawFormat);
 

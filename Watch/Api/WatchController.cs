@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using Watch.Business;
 using Watch.DataAccess.Identity;
@@ -29,30 +30,17 @@ namespace Watch.Api
             this.userManager = userManager;
         }
 
-        #region [IMAGE]
-        [HttpPost]
-        public  void SaveImage(string image)
-        {
-            MemoryStream ms = new MemoryStream(Convert.FromBase64String(image));
-            var img = System.Drawing.Image.FromStream(ms);
-            System.Drawing.Image s;
-            img.Save("~/WatchImages/image" , img.RawFormat);
-            
-        }
-        #endregion
-
-
         #region [WATCH-CRUD]
 
-        [Authorize(Roles = "1,3")]
+        [Authorize]
         [HttpPost]
         public async Task<IResponse> InsertWatch(Models.Watch watch)
         {
             try
             {
                 User user = await userManager.FindByNameAsync(User.Identity.Name);
-                watch.User_Id = user.Id;
-                watchBusiness.InsertWatch(watch , watch.MainImage , watch.SubImages);
+                watch.OwnerUser_Id = user.Id;
+                watchBusiness.InsertWatch(watch);
                 return new Response<Models.Watch>();
             }
             catch (Exception e)
@@ -61,7 +49,7 @@ namespace Watch.Api
             }
         }
 
-        [Authorize(Roles = "1,3")]
+        [Authorize]
         [HttpGet]
         public IResponse DeleteWatch(int id)
         {
@@ -76,7 +64,7 @@ namespace Watch.Api
             }
         }
 
-        [Authorize(Roles = "1,3")]
+        [Authorize]
         [HttpPost]
         public IResponse UpdateWatch(Models.Watch watch)
         {
@@ -89,6 +77,17 @@ namespace Watch.Api
             {
                 return new Response<Models.Watch>() { Success = false, Message = e.Message, Result = null };
             }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IResponse GetUserWatches(int? pageNumber = null, int? pageSize = null, string searchExp = null)
+        {
+            Response<Models.Watch> response = new Response<Models.Watch>();
+
+            response.Result.Data = watchBusiness.GetUserWatches(pageNumber, pageSize, searchExp, User.Identity.Name, out response.Result.Count);
+
+            return response;
         }
 
         [HttpGet]
@@ -108,50 +107,16 @@ namespace Watch.Api
         }
         #endregion
 
-        #region [BOOKMARK]
-
-        [Authorize(Roles = "2")]
-        public IResponse BookmarkWatch(int watchId)
-        {
-            try
-            {
-                int userId = userRepository.Get().Where(u => u.UserName == User.Identity.Name).Single().Id;
-                watchBusiness.BookmarkWatch(userId, watchId);
-                return new Response<WatchBookmark>();
-            }
-            catch (Exception e)
-            {
-                return new Response<WatchBookmark>() { Success = false, Message = e.Message };
-            }
-
-        }
-
-        [Authorize(Roles = "2")]
-        public IResponse GetAllWatchBookmarks()
-        {
-            try
-            {
-                int userId = userRepository.Get().Where(u => u.UserName == User.Identity.Name).Single().Id;
-                PagedResult<int> result = new PagedResult<int>();
-                result.Data = watchBusiness.GetAllBookmarks(userId);
-                return new Response<int>() { Result = result };
-            }
-            catch (Exception e)
-            {
-                return new Response<int>() { Success = false, Message = e.Message };
-            }
-
-        }
-
-        #endregion
-
-        #region []
+        #region [Watch , Brand]
 
         [HttpGet]
-        public IResponse GetBestProducts(int? pageNumber = null, int? pageSize = null)
+        public IResponse GetBestProducts(int[] brands, int? pageNumber = null, int? pageSize = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
-            result.Data = watchBusiness.GetBestProducts(pageNumber, pageSize, out result.Count);
+
+            string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+            result.Data = watchBusiness.GetBestProducts(pageNumber, pageSize, brands, userName, out result.Count);
             return new Response<Models.Watch>
             {
                 Result = result
@@ -170,12 +135,38 @@ namespace Watch.Api
         }
 
         [HttpGet]
+        public IResponse GetAllBrands()
+        {
+            PagedResult<Brand> result = new PagedResult<Brand>();
+            result.Data = watchBusiness.GetAllBrands(out result.Count);
+            return new Response<Brand>
+            {
+                Result = result
+            };
+        }
+
+        [HttpGet]
+        public IResponse GetBrandBotique(int? pageNumber, int? pageSize, int brandId)
+        {
+            PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
+            result.Data = watchBusiness.GetBrandButique(pageNumber, pageSize, brandId, out result.Count);
+            return new Response<Models.Watch>
+            {
+                Result = result
+            };
+
+        }
+
+        [HttpGet]
         public IResponse GetStoreWatches(int storeId, int? pageNumber = null, int? pageSize = null)
         {
             try
             {
                 PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
-                result.Data = watchBusiness.GetStoreWatches(storeId, pageNumber, pageSize, out result.Count);
+
+                string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+                result.Data = watchBusiness.GetStoreWatches(storeId, pageNumber, pageSize, userName, out result.Count);
                 return new Response<Models.Watch>
                 {
                     Result = result
@@ -183,7 +174,7 @@ namespace Watch.Api
             }
             catch (Exception e)
             {
-                return new Response<Store>
+                return new Response<Models.Watch>
                 {
                     Success = false,
                     Message = e.Message
@@ -192,10 +183,38 @@ namespace Watch.Api
         }
 
         [HttpGet]
-        public IResponse GetLatestWatches(int? pageNumber = null, int? pageSize = null)
+        public IResponse GetStoreBestWatches(int storeId, int? pageNumber = null, int? pageSize = null)
+        {
+            try
+            {
+                PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
+
+                string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+                result.Data = watchBusiness.GetStoreBestWatches(storeId, pageNumber, pageSize, userName, out result.Count);
+                return new Response<Models.Watch>
+                {
+                    Result = result
+                };
+            }
+            catch (Exception e)
+            {
+                return new Response<Models.Watch>
+                {
+                    Success = false,
+                    Message = e.Message
+                };
+            }
+        }
+
+        [HttpGet]
+        public IResponse GetLatestWatches(int[] brands, int? pageNumber = null, int? pageSize = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
-            result.Data = watchBusiness.GetLatestProducts(pageNumber, pageSize, out result.Count);
+
+            string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+            result.Data = watchBusiness.GetLatestProducts(pageNumber, pageSize, brands, userName, out result.Count);
             return new Response<Models.Watch>
             {
                 Result = result
@@ -203,10 +222,13 @@ namespace Watch.Api
         }
 
         [HttpGet]
-        public IResponse GetTopSellWatches(int? pageNumber = null, int? pageSize = null)
+        public IResponse GetTopSellWatches(int[] brands, int? pageNumber = null, int? pageSize = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
-            result.Data = watchBusiness.GetTopSellWatches(pageNumber, pageSize, out result.Count);
+
+            string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+            result.Data = watchBusiness.GetTopSellWatches(pageNumber, pageSize, brands, userName, out result.Count);
             return new Response<Models.Watch>
             {
                 Result = result
@@ -218,7 +240,9 @@ namespace Watch.Api
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
 
-            result.Data = watchBusiness.GetLatestMenWatches(pageNumber, pageSize, out result.Count);
+            string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+            result.Data = watchBusiness.GetLatestMenWatches(pageNumber, pageSize, userName, out result.Count);
 
             return new Response<Models.Watch>
             {
@@ -231,7 +255,9 @@ namespace Watch.Api
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
 
-            result.Data = watchBusiness.GetLatestWomenWatches(pageNumber, pageSize, out result.Count);
+            string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+            result.Data = watchBusiness.GetLatestWomenWatches(pageNumber, pageSize, userName, out result.Count);
 
             return new Response<Models.Watch>
             {
@@ -244,7 +270,11 @@ namespace Watch.Api
         {
             try
             {
-                Models.Watch watch = watchBusiness.GetWatchDetail(watchId);
+                string username = String.Empty;
+                if (User.Identity.IsAuthenticated)
+                    username = User.Identity.Name;
+
+                Models.Watch watch = watchBusiness.GetWatchDetail(watchId, username);
                 return new Response<Models.Watch>
                 {
                     Result = new PagedResult<Models.Watch>
@@ -268,13 +298,47 @@ namespace Watch.Api
         }
 
         [HttpGet]
+        public IResponse GetWatchSummary(int watchId)
+        {
+            try
+            {
+                string username = String.Empty;
+                if (User.Identity.IsAuthenticated)
+                    username = User.Identity.Name;
+
+                Models.Watch watch = watchBusiness.GetWatchDetail(watchId, username);
+                return new Response<WatchSummaryViewModel>
+                {
+                    Result = new PagedResult<WatchSummaryViewModel>
+                    {
+                        Count = 1,
+                        Data = new List<WatchSummaryViewModel>
+                        {
+                            (WatchSummaryViewModel)watch,
+                        }
+                    }
+                };
+            }
+            catch (Exception e)
+            {
+                return new Response<WatchSummaryViewModel>
+                {
+                    Success = false,
+                    Message = e.Message,
+                };
+            }
+        }
+
+        [HttpGet]
         public IResponse GetSellerWatches(int sellerId, int? pageNumber = null, int? pageSize = null)
         {
             try
             {
                 PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
 
-                result.Data = watchBusiness.GetSellerWatches(sellerId, pageNumber, pageNumber, out result.Count);
+                string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+                result.Data = watchBusiness.GetSellerWatches(sellerId, pageNumber, pageNumber, userName, out result.Count);
 
                 return new Response<Models.Watch>
                 {
@@ -298,7 +362,9 @@ namespace Watch.Api
             {
                 PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
 
-                result.Data = watchBusiness.GetRecommendedWatches(brandId);
+                string userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
+
+                result.Data = watchBusiness.GetRecommendedWatches(brandId, userName);
 
                 return new Response<Models.Watch>
                 {
@@ -315,7 +381,7 @@ namespace Watch.Api
             }
         }
 
-        [Authorize(Roles = "1,2,3")]
+        [Authorize(Roles = "Admin,Seller,User")]
         [HttpGet]
         public async Task<IResponse> SuggestPrice(int watchId, decimal suggestedPrice)
         {
@@ -335,39 +401,12 @@ namespace Watch.Api
             }
         }
 
-        [Authorize(Roles = "1,2,3")]
         [HttpGet]
-        public async Task<IResponse> GetAddressList()
-        {
-            try
-            {
-                User user = await userManager.FindByNameAsync(User.Identity.Name);
-
-                PagedResult<Address> result = new PagedResult<Address>();
-
-                result.Data = watchBusiness.GetAddressList(user.Id);
-
-                return new Response<Address>
-                {
-                    Result = result
-                };
-            }
-            catch (Exception e)
-            {
-                return new Response<Address>
-                {
-                    Success = false,
-                    Message = e.Message
-                };
-            }
-        }
-
-        [HttpGet]
-        public IResponse WatchSearch(string searchExp, int? pageNumber = null, int? pageSize = null, int? brandId = null, Movement? movement = null, decimal? minPrice = null, decimal? maxPrice = null, Condition? condition = null)
+        public IResponse WatchSearch(string searchExp, int? pageNumber = null, int? pageSize = null, int? brandId = null, Movement? movement = null, decimal? minPrice = null, decimal? maxPrice = null, Condition? condition = null, Models.Gender? gender = null)
         {
             PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
 
-            result.Data = watchBusiness.SearchWatch(searchExp, pageNumber, pageSize, brandId, movement, minPrice, maxPrice, condition, out result.Count);
+            result.Data = watchBusiness.SearchWatch(searchExp, pageNumber, pageSize, brandId, movement, minPrice, maxPrice, condition, gender, out result.Count);
 
             return new Response<Models.Watch>
             {
@@ -388,30 +427,135 @@ namespace Watch.Api
             };
         }
 
-        //[HttpGet]
-        //public IResponse GetStoreWatches(int storeId, SortBy? sortBy = null, int? pageNumber = null, int? pageSize = null)
-        //{
-        //    try
-        //    {
-        //        PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
+        [HttpGet]
 
-        //        result.Data = watchBusiness.GetStoreWatches(storeId, sortBy, pageNumber, pageNumber, out result.Count);
+        public IResponse GetSellerByUserId(int userId)
+        {
+            try
+            {
+                Seller seller = watchBusiness.GetSellerByUserId(userId);
+                return new Response<Seller>
+                {
+                    Result = new PagedResult<Seller>
+                    {
+                        Count = 1,
+                        Data = new List<Seller>
+                        {
+                            seller,
+                        }
+                    }
+                };
+            }
+            catch (Exception e)
+            {
+                return new Response<Seller>
+                {
+                    Success = false,
+                    Message = e.Message,
+                };
+            }
+        }
 
-        //        return new Response<Models.Watch>
-        //        {
-        //            Result = result
-        //        };
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return new Response<Models.Watch>
-        //        {
-        //            Success = false,
-        //            Message = e.Message
-        //        };
-        //    }
-        //}
+        [HttpGet]
+        [Authorize(Roles = "User")]
+        public IResponse GetPurchaseHistory(int? pageNumber = null, int? pageSize = null)
+        {
+            PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
 
+            result.Data = watchBusiness.GetPurchaseHistory(pageNumber, pageSize, User.Identity.Name, out result.Count);
+
+            return new Response<Models.Watch>
+            {
+                Result = result
+            };
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "User,Seller")]
+        public IResponse GetSoldItemHistory(int? pageNumber = null, int? pageSize = null)
+        {
+            PagedResult<Models.Watch> result = new PagedResult<Models.Watch>();
+            result.Data = watchBusiness.GetSoldItemHistory(pageNumber, pageSize, User.Identity.Name, out result.Count);
+            return new Response<Models.Watch>
+            {
+                Result = result
+            };
+        }
+
+        #endregion
+
+        #region [Address]
+        [HttpPost]
+        [Authorize(Roles = "Admin,Seller,User")]
+        public async Task<IResponse> AddAddress(Address address, string name = null, string family = null, string mainPhoneNumber = null, Models.Gender? gender = null)
+        {
+            try
+            {
+                User user = await userManager.FindByNameAsync(User.Identity.Name);
+                watchBusiness.AddAddress(user.Id, address.City, address.FullAddress, address.PhoneNumber, name, family, mainPhoneNumber, gender);
+                return new Response<Address>();
+            }
+            catch (Exception e)
+            {
+                return new Response<Address>
+                {
+                    Success = false,
+                    Message = e.Message
+                };
+            }
+        }
+
+        [Authorize(Roles = "Admin,Seller,User")]
+        [HttpGet]
+        public async Task<IResponse> GetAddressList()
+        {
+            try
+            {
+                User user = await userManager.FindByNameAsync(User.Identity.Name);
+
+                PagedResult<Address> result = new PagedResult<Address>
+                {
+                    Data = watchBusiness.GetAddressList(user.Id)
+                };
+
+                return new Response<Address>
+                {
+                    Result = result
+                };
+            }
+            catch (Exception e)
+            {
+                return new Response<Address>
+                {
+                    Success = false,
+                    Message = e.Message
+                };
+            }
+        }
+        #endregion
+
+        #region[File Upload]
+        [HttpPost]
+        [Authorize]
+        public string UploadWatchImage()
+        {
+            if (!Request.Content.IsMimeMultipartContent())
+                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+
+            var files = HttpContext.Current.Request.Files;
+            byte[] buffer = new byte[files[0].ContentLength];
+            files[0].InputStream.Read(buffer, 0, buffer.Length);
+
+            MemoryStream ms = new MemoryStream(buffer);
+            var mainImg = System.Drawing.Image.FromStream(ms);
+
+            string relPath = @"/Images/" + Guid.NewGuid().ToString() + ".jpg";
+            string path = AppDomain.CurrentDomain.BaseDirectory + relPath;
+
+            mainImg.Save(path, mainImg.RawFormat);
+
+            return relPath;
+        }
         #endregion
     }
 }

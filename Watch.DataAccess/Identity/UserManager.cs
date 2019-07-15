@@ -13,11 +13,17 @@ namespace Watch.DataAccess.Identity
     {
         public UserManager(IUserStore<User, int> store) : base(store)
         {
+            EmailService = new EmailService();
         }
 
         public override Task SendSmsAsync(int userId, string message)
         {
-            return base.SendSmsAsync(userId, message);
+            throw new NotImplementedException();
+        }
+
+        public override Task SendEmailAsync(int userId, string subject, string body)
+        {
+            throw new NotImplementedException();
         }
 
         public override Task<User> FindAsync(string userName, string password)
@@ -25,23 +31,29 @@ namespace Watch.DataAccess.Identity
             return Task.Run(() =>
             {
                 var passwordHasher = new PasswordHasher();
-                var user = Store.FindByNameAsync(userName).Result;
-                if (passwordHasher.VerifyHashedPassword(user.Password, password) == PasswordVerificationResult.Failed)
+                var user = Store.FindByNameAsync(userName)?.Result;
+                if (passwordHasher.VerifyHashedPassword(user?.Password, password) == PasswordVerificationResult.Failed)
                     return null;
                 return user;
             });
         }
 
-        public override Task<ClaimsIdentity> CreateIdentityAsync(User user, string authenticationType)
+        public override Task<User> FindByNameAsync(string userName)
         {
             return Task.Run(() =>
             {
-                var identity = base.CreateIdentityAsync(user, authenticationType).Result;
-                identity.AddClaim(new Claim("username", user.UserName));
-                foreach (var role in user.UserRoles)
-                    identity.AddClaim(new Claim(ClaimTypes.Role, role.RoleId.ToString()));
-                return identity;
+                return Store.FindByNameAsync(userName).Result;
             });
+        }
+
+        public async override Task<ClaimsIdentity> CreateIdentityAsync(User user, string authenticationType)
+        {
+            var identity = await base.CreateIdentityAsync(user, authenticationType);
+            identity.AddClaim(new Claim("username", user.UserName));
+            foreach (var role in user.UserRoles)
+                identity.AddClaim(new Claim(ClaimTypes.Role, role.RoleId.ToString()));
+            return identity;
+
         }
 
         public override Task<IdentityResult> CreateAsync(User user, string password)

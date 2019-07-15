@@ -17,6 +17,6 @@ namespace Watch.DataAccess.Repositories
         IQueryable<T> Get();
         List<T> GetAll();
         List<T> GetAll(Expression<Func<T, object>> includes);
-        List<T> GetAll(out int count, Expression<Func<T, bool>> where, int? skip, int? take, Expression<Func<T, int>> orderBy, Expression<Func<T, object>> includes);
+        IQueryable<T> GetAll(out int count, Expression<Func<T, bool>> where, int? skip, int? take, Expression<Func<T, int>> orderBy, Expression<Func<T, object>> includes);
     }
 }

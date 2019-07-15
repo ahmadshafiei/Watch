@@ -16,8 +16,8 @@ namespace Watch.Models
         public int? User_Id { get; set; }
         [ForeignKey("User_Id")]
         public User User { get; set; }
-        public int Store_Id { get; set; }
-        [ForeignKey("Store_Id")]
-        public Store Store { get; set; }
+        public int Seller_Id { get; set; }
+        [ForeignKey("Seller_Id")]
+        public Seller Store { get; set; }
     }
 }
